@@ -1,6 +1,6 @@
-import FilterContainerView from '../filters-container-view.js';
-import FilterItemView from '../filter-item-view.js';
-import { render } from '../../render.js';
+import FilterContainerView from '../view/filters-container-view.js';
+import FilterItemView from '../view/filter-item-view.js';
+import { render } from '../render.js';
 
 export default class FiltersPresenter {
   filtersContainerComponent = new FilterContainerView();

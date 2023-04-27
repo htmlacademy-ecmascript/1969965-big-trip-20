@@ -1,6 +1,6 @@
-import { render } from '../../render.js';
-import SortingContainerView from '../sorting-container-view.js';
-import SortingItemView from '../sorting-item-view.js';
+import { render } from '../render.js';
+import SortingContainerView from '../view/sorting-container-view.js';
+import SortingItemView from '../view/sorting-item-view.js';
 
 export default class SortingPanelPresenter {
   sortingContainerComponent = new SortingContainerView();

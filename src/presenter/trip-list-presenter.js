@@ -1,15 +1,15 @@
-import { render } from '../../render.js';
-import TripListView from '../trip-list-view.js';
-import TripItemView from '../trip-item-view.js';
-import EventFormView from '../event-form-view.js';
-import EventFormHeaderView from '../event-form-header-view.js';
-import EventFormDetailsView from '../event-form-details-view.js';
-import EventFormOffersView from '../event-form-offers-view.js';
-import EventFormOfferItemView from '../event-form-offer-item-view.js';
-import EventFormDestinationView from '../event-form-destination-view.js';
-import EventFormDestinationImagesView from '../event-form-destination-images-view.js';
-import EventFormDestinationPictureView from '../event-form-destination-picture-view.js';
-import { RenderPosition } from '../../render.js';
+import { render } from '../render.js';
+import TripListView from '../view/trip-list-view.js';
+import TripItemView from '../view/trip-item-view.js';
+import EventFormView from '../view/event-form-view.js';
+import EventFormHeaderView from '../view/event-form-header-view.js';
+import EventFormDetailsView from '../view/event-form-details-view.js';
+import EventFormOffersView from '../view/event-form-offers-view.js';
+import EventFormOfferItemView from '../view/event-form-offer-item-view.js';
+import EventFormDestinationView from '../view/event-form-destination-view.js';
+import EventFormDestinationImagesView from '../view/event-form-destination-images-view.js';
+import EventFormDestinationPictureView from '../view/event-form-destination-picture-view.js';
+import { RenderPosition } from '../render.js';
 
 export default class TripListPresenter {
   tripListComponent = new TripListView();
