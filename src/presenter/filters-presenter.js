@@ -1,5 +1,5 @@
 import FilterContainerView from '../view/filters-container-view.js';
-import FilterItemView from '../view/filter-item-view.js';
+// import FilterItemView from '../view/filter-item-view.js';
 import { render } from '../render.js';
 
 export default class FiltersPresenter {
@@ -10,6 +10,6 @@ export default class FiltersPresenter {
 
   init() {
     render(this.filtersContainerComponent, this.filtersContainer);
-    render(new FilterItemView(), this.filtersContainerComponent.getElement());
+    // render(new FilterItemView(), this.filtersContainerComponent.getElement());
   }
 }

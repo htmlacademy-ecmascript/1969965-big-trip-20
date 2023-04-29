@@ -2,9 +2,9 @@ import { createElement } from '../render.js';
 
 function createEventFormDestinationImagesTemplate() {
   return `<div class="event__photos-container">
-  <div class="event__photos-tape">
-  </div>
-</div>`;
+            <div class="event__photos-tape">
+            </div>
+          </div>`;
 }
 
 export default class EventFormDestinationImagesView {
