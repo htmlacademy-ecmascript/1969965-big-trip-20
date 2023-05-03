@@ -1,5 +1,5 @@
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
+const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
-export { getRandomArrayElement };
+const getRandomNumber = (num) => Math.floor(Math.random() * num);
+
+export { getRandomArrayElement, getRandomNumber };
