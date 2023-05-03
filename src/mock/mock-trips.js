@@ -10,7 +10,8 @@ const mockTrips = [
     timeStart: new Date(2023, 7, 1, 10, 30, 0),
     timeEnd: new Date(2023, 7, 1, 11, 30, 0),
     isFavourite: true,
-    offers: 3
+    offers: 3,
+    id: 1
   },
   {
     destination: getRandomArrayElement(DESTINATIONS),
@@ -20,7 +21,8 @@ const mockTrips = [
     timeStart: new Date(2023, 7, 5, 20, 30, 0),
     timeEnd: new Date(2023, 7, 5, 20, 55, 0),
     isFavourite: true,
-    offers: 2
+    offers: 2,
+    id: 2
   },
   {
     destination: getRandomArrayElement(DESTINATIONS),
@@ -30,7 +32,8 @@ const mockTrips = [
     timeStart: new Date(2023, 7, 9, 9, 20, 0),
     timeEnd: new Date(2023, 7, 9, 10, 10, 0),
     isFavourite: true,
-    offers: 5
+    offers: 5,
+    id: 3
   },
   {
     destination: getRandomArrayElement(DESTINATIONS),
@@ -40,7 +43,8 @@ const mockTrips = [
     timeStart: new Date(2023, 6, 15, 14, 0, 0),
     timeEnd: new Date(2023, 6, 15, 16, 15, 0),
     isFavourite: true,
-    offers: 1
+    offers: 1,
+    id: 4
   }
 ];
 

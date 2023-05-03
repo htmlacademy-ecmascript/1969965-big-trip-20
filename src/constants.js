@@ -1,4 +1,4 @@
-const TRIP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const TRIP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'Sightseeing', 'Restaurant'];
 
 const DESTINATIONS = ['Munich', 'Rome', 'Rhodes', 'Krakow', 'Montenegro', 'Helsinki'];
 
