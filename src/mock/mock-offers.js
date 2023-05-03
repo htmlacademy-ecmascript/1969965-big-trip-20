@@ -1,39 +1,64 @@
 const mockOffers = [
   {
     type: 'taxi',
-    name: 'Order Uber',
-    price: 20
+    offers: [
+      {
+        title: 'Order Uber',
+        price: 20,
+        id: 1
+      }
+    ]
   },
   {
     type: 'flight',
-    name: 'Add luggage',
-    price: 50
-  },
-  {
-    type: 'flight',
-    name: 'Switch to comfort',
-    price: 80
+    offers: [
+      {
+        title: 'Add luggage',
+        price: 50,
+        id: 2
+      },
+      {
+        title: 'Switch to comfort',
+        price: 80,
+        id: 3
+      }
+    ]
   },
   {
     type: 'drive',
-    name: 'Rent a car',
-    price: 200
+    offers: [
+      {
+        title: 'Rent a car',
+        price: 200,
+        id: 4
+      }
+    ]
   },
   {
     type: 'check-in',
-    name: 'Add breakfast',
-    price: 50
+    offers: [
+      {
+        title: 'Add breakfast',
+        price: 50,
+        id: 5
+      }
+    ]
   },
   {
     type: 'sightseeing',
-    name: 'Book tickets',
-    price: 40
-  },
-  {
-    type: 'sightseeing',
-    name: 'Lunch in city',
-    price: 30
-  },
+    offers: [
+      {
+        title: 'Book tickets',
+        price: 40,
+        id: 6
+      },
+      {
+        title: 'Lunch in city',
+        price: 30,
+        id: 7
+      }
+    ]
+  }
 ];
 
 export { mockOffers };

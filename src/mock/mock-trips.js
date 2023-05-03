@@ -1,56 +1,50 @@
-import { getRandomArrayElement } from '../utils.js';
-import { TRIP_TYPES, DESTINATIONS } from '../constants.js';
+import { getRandomArrayElement, getRandomNumber } from '../utils.js';
 
 const mockTrips = [
   {
-    destination: getRandomArrayElement(DESTINATIONS),
-    type: getRandomArrayElement(TRIP_TYPES),
-    price: '100',
-    date: new Date(2023, 7, 1),
+    id: 1,
+    destination: getRandomNumber(6),
+    type: 'taxi',
+    price: 100,
     timeStart: new Date(2023, 7, 1, 10, 30, 0),
     timeEnd: new Date(2023, 7, 1, 11, 30, 0),
     isFavourite: true,
-    offers: 3,
-    id: 1
+    offers: [1]
   },
   {
-    destination: getRandomArrayElement(DESTINATIONS),
-    type: getRandomArrayElement(TRIP_TYPES),
+    id: 2,
+    destination: getRandomNumber(6),
+    type: 'flight',
     price: '200',
     date: new Date(2023, 7, 5),
     timeStart: new Date(2023, 7, 5, 20, 30, 0),
     timeEnd: new Date(2023, 7, 5, 20, 55, 0),
     isFavourite: true,
-    offers: 2,
-    id: 2
+    offers: [2, 3]
   },
   {
-    destination: getRandomArrayElement(DESTINATIONS),
-    type: getRandomArrayElement(TRIP_TYPES),
+    id: 3,
+    destination: getRandomNumber(6),
+    type: 'check-in',
     price: '150',
     date: new Date(2023, 7, 9),
     timeStart: new Date(2023, 7, 9, 9, 20, 0),
     timeEnd: new Date(2023, 7, 9, 10, 10, 0),
     isFavourite: true,
-    offers: 5,
-    id: 3
+    offers: []
   },
   {
-    destination: getRandomArrayElement(DESTINATIONS),
-    type: getRandomArrayElement(TRIP_TYPES),
+    id: 4,
+    destination: getRandomNumber(6),
+    type: 'sightseeing',
     price: '120',
     date: new Date(2023, 6, 15),
     timeStart: new Date(2023, 6, 15, 14, 0, 0),
     timeEnd: new Date(2023, 6, 15, 16, 15, 0),
     isFavourite: true,
-    offers: 1,
-    id: 4
+    offers: [7]
   }
 ];
 
-function getRandomTrip() {
-  return getRandomArrayElement(mockTrips);
-}
-
-export { getRandomTrip };
+export { mockTrips };
 
