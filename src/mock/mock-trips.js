@@ -6,9 +6,9 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'taxi',
     price: 100,
-    timeStart: new Date(2023, 7, 1, 10, 30, 0),
-    timeEnd: new Date(2023, 7, 1, 11, 30, 0),
-    isFavourite: true,
+    timeStart: '2019-07-10T22:55:56.845Z',
+    timeEnd: '2019-07-11T11:22:13.375Z',
+    isFavorite: true,
     offers: [1]
   },
   {
@@ -16,10 +16,9 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'flight',
     price: '200',
-    date: new Date(2023, 7, 5),
-    timeStart: new Date(2023, 7, 5, 20, 30, 0),
-    timeEnd: new Date(2023, 7, 5, 20, 55, 0),
-    isFavourite: true,
+    timeStart: '2019-07-13T12:45:00.845Z',
+    timeEnd: '2019-07-13T14:25:00.375Z',
+    isFavorite: true,
     offers: [2, 3]
   },
   {
@@ -27,10 +26,9 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'check-in',
     price: '150',
-    date: new Date(2023, 7, 9),
     timeStart: new Date(2023, 7, 9, 9, 20, 0),
     timeEnd: new Date(2023, 7, 9, 10, 10, 0),
-    isFavourite: true,
+    isFavorite: false,
     offers: []
   },
   {
@@ -38,10 +36,9 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'sightseeing',
     price: '120',
-    date: new Date(2023, 6, 15),
     timeStart: new Date(2023, 6, 15, 14, 0, 0),
     timeEnd: new Date(2023, 6, 15, 16, 15, 0),
-    isFavourite: true,
+    isFavorite: true,
     offers: [7]
   }
 ];

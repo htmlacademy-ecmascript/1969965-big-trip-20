@@ -28,12 +28,10 @@ export default class TripListPresenter {
     this.trips = [...this.tripsModel.getTrips()];
     this.offers = [...this.tripsModel.getOffers()];
     this.destinations = [...this.tripsModel.getDestinations()];
-    // console.log(this.destinations);
-    // console.log(this.offers);
 
     render(this.tripListComponent, this.tripListContainer);
 
-    for (let i = 0; i < this.trips.length; i++) {
+    for (let i = 1; i < this.trips.length; i++) {
       render(new TripItemView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.tripListComponent.getElement());
     }
 
