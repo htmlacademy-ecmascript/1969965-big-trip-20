@@ -19,15 +19,22 @@ export default class TripListPresenter {
   eventFormOffersComponent = new EventFormOffersView();
   eventFormDestinationImagesComponent = new EventFormDestinationImagesView();
 
-  constructor({tripListContainer}) {
+  constructor({tripListContainer, tripsModel}) {
     this.tripListContainer = tripListContainer;
+    this.tripsModel = tripsModel;
   }
 
   init() {
+    this.trips = [...this.tripsModel.getTrips()];
+    this.offers = [...this.tripsModel.getOffers()];
+    // console.log(this.offers);
+
     render(this.tripListComponent, this.tripListContainer);
-    for (let i = 0; i < 3; i++) {
-      render(new TripItemView(), this.tripListComponent.getElement());
+
+    for (let i = 0; i < this.trips.length; i++) {
+      render(new TripItemView({trip: this.trips[i], offers: this.offers}), this.tripListComponent.getElement());
     }
+
     render(this.eventFormComponent, this.tripListComponent.getElement(), RenderPosition.AFTERBEGIN);
     render(new EventFormHeaderView(), this.eventFormComponent.getChildElement(0));
     render(this.eventFormDetailsComponent, this.eventFormComponent.getChildElement(0));

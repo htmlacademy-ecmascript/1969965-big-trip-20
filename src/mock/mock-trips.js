@@ -46,5 +46,9 @@ const mockTrips = [
   }
 ];
 
-export { mockTrips };
+function getRandomTrip() {
+  return getRandomArrayElement(mockTrips);
+}
+
+export { getRandomTrip };
 
