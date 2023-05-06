@@ -80,5 +80,7 @@ const mockDestinations = [
   }
 ];
 
-export { mockDestinations };
+const getMockDestinations = () => mockDestinations;
+
+export { getMockDestinations };
 
