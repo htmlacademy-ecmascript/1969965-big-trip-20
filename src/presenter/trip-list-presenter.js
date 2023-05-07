@@ -15,7 +15,7 @@ export default class TripListPresenter {
   tripListComponent = new TripListView();
   eventFormComponent = new EventFormView();
   eventFormDetailsComponent = new EventFormDetailsView();
-  eventFormDestinationComponent = new EventFormDestinationView();
+  // eventFormDestinationComponent = new EventFormDestinationView();
   eventFormOffersComponent = new EventFormOffersView();
   eventFormDestinationImagesComponent = new EventFormDestinationImagesView();
 
@@ -29,7 +29,8 @@ export default class TripListPresenter {
     this.offers = [...this.tripsModel.getOffers()];
     this.destinations = [...this.tripsModel.getDestinations()];
     this.destinationsList = [...this.tripsModel.getDestinationsList()];
-    console.log(this.destinations);
+    this.eventFormDestinationComponent = new EventFormDestinationView({trip: this.trips[0], destinations: this.destinations});
+
     render(this.tripListComponent, this.tripListContainer);
 
     for (let i = 1; i < this.trips.length; i++) {
@@ -44,6 +45,6 @@ export default class TripListPresenter {
     render(this.eventFormDestinationComponent, this.eventFormDetailsComponent.getElement());
     render(new EventFormOfferItemView({offers: this.offers, trip: this.trips[0], destinations: this.destinations}), this.eventFormOffersComponent.getElement());
     render(this.eventFormDestinationImagesComponent, this.eventFormDestinationComponent.getElement());
-    render(new EventFormDestinationPictureView(), this.eventFormDestinationImagesComponent.getElement());
+    render(new EventFormDestinationPictureView({trip: this.trips[0], destinations: this.destinations}), this.eventFormDestinationImagesComponent.getElement());
   }
 }
