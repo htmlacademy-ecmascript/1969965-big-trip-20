@@ -31,12 +31,12 @@ export default class TripListPresenter {
 
     render(this.tripListComponent, this.tripListContainer);
 
-    for (let i = 1; i < this.trips.length; i++) {
+    for (let i = 0; i < this.trips.length; i++) {
       render(new TripItemView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.tripListComponent.getElement());
     }
 
     render(this.eventFormComponent, this.tripListComponent.getElement(), RenderPosition.AFTERBEGIN);
-    render(new EventFormHeaderView(), this.eventFormComponent.getChildElement(0));
+    render(new EventFormHeaderView({destinations: this.destinations}), this.eventFormComponent.getChildElement(0));
     render(this.eventFormDetailsComponent, this.eventFormComponent.getChildElement(0));
     render(this.eventFormOffersComponent, this.eventFormDetailsComponent.getElement());
     render(this.eventFormDestinationComponent, this.eventFormDetailsComponent.getElement());

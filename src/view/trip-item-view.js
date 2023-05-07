@@ -1,6 +1,6 @@
 import { createElement } from '../render.js';
 import { formatDate, findDifference, formatDifference } from '../utils.js';
-import { DATE_FORMATS, FAVOURITE_BTN_STATE_CLASS } from '../constants.js';
+import { DATE_FORMATS, FAVOURITE_BTN_STATE_CLASSES } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
@@ -8,30 +8,33 @@ function createTripOffersTemplate(offers) {
               <span class="event__offer-title">${title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${price}</span>
-             </li>`)}
+             </li>`).join('')}
           </ul>`;
 }
 
 function createTripItemTemplate(trip, off, destinations) {
   const {type, price, offers, destination, timeStart, timeEnd, isFavorite} = trip;
-
-  const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
-
-  const chosenOffers = tripOffers.filter((item) => {
-    for (const elem of offers) {
-      return item.id === elem;
-    }
-  });
-
   const currentDestination = destinations.filter((elem) => elem.id === destination);
   const cityName = currentDestination[0].name;
-  const offersTemplate = createTripOffersTemplate(chosenOffers);
+  const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
 
-  console.log(isFavorite);
-  
+  function getOffers() {
+    const arr = [];
+    tripOffers.forEach((item) => {
+      offers.forEach((elem) => {
+        if (item.id === elem) {
+          arr.push(item);
+        }
+      });
+    });
+    return arr;
+  }
+
+  const offersTemplate = createTripOffersTemplate(getOffers());
+
   const favoriteClassName = isFavorite
-    ? 'event__favorite-btn event__favorite-btn--active'
-    : 'event__favorite-btn';
+    ? FAVOURITE_BTN_STATE_CLASSES.active
+    : FAVOURITE_BTN_STATE_CLASSES.inactive;
 
   return `<li class="trip-events__item">
   <div class="event">

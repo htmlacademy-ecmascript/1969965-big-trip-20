@@ -9,7 +9,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [1]
+    offers: [3]
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const mockTrips = [
     timeStart: '2019-07-13T12:45:00.845Z',
     timeEnd: '2019-07-13T14:25:00.375Z',
     isFavorite: true,
-    offers: [2, 3]
+    offers: [4, 6]
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const mockTrips = [
     timeStart: new Date(2023, 6, 15, 14, 0, 0),
     timeEnd: new Date(2023, 6, 15, 16, 15, 0),
     isFavorite: true,
-    offers: [7]
+    offers: [13]
   }
 ];
 

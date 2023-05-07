@@ -6,6 +6,16 @@ const mockOffers = [
         title: 'Order Uber',
         price: 20,
         id: 1
+      },
+      {
+        title: 'Order Yandex',
+        price: 20,
+        id: 2
+      },
+      {
+        title: 'Order Papa',
+        price: 0,
+        id: 3
       }
     ]
   },
@@ -15,12 +25,17 @@ const mockOffers = [
       {
         title: 'Add luggage',
         price: 50,
-        id: 2
+        id: 4
       },
       {
         title: 'Switch to comfort',
         price: 80,
-        id: 3
+        id: 5
+      },
+      {
+        title: 'Switch to extra-comfort',
+        price: 100,
+        id: 6
       }
     ]
   },
@@ -30,7 +45,12 @@ const mockOffers = [
       {
         title: 'Rent a car',
         price: 200,
-        id: 4
+        id: 7
+      },
+      {
+        title: 'Steal a car',
+        price: 500,
+        id: 8
       }
     ]
   },
@@ -40,7 +60,17 @@ const mockOffers = [
       {
         title: 'Add breakfast',
         price: 50,
-        id: 5
+        id: 9
+      },
+      {
+        title: 'Add lunch',
+        price: 50,
+        id: 10
+      },
+      {
+        title: 'Add supper',
+        price: 50,
+        id: 11
       }
     ]
   },
@@ -50,12 +80,17 @@ const mockOffers = [
       {
         title: 'Book tickets',
         price: 40,
-        id: 6
+        id: 12
+      },
+      {
+        title: 'Excursion',
+        price: 60,
+        id: 13
       },
       {
         title: 'Lunch in city',
         price: 30,
-        id: 7
+        id: 14
       }
     ]
   }

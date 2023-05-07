@@ -1,6 +1,31 @@
 import { createElement } from '../render.js';
+import { turnFirstCharToUppercase } from '../constants.js';
+import { TRIP_TYPES } from '../constants.js';
 
-function createEventFormHeaderTemplate() {
+function createEventTypeItemTemplate(types) {
+  return `<div class="event__type-list">
+            <fieldset class="event__type-group">
+            <legend class="visually-hidden">Event type</legend>
+            ${types.map(({type}) =>
+    `<div class="event__type-item">
+                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+                <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${turnFirstCharToUppercase(type)}</label>
+              </div>`).join('')}
+            </fieldset>
+          </div>`;
+}
+
+function createDestinationsListTemplate(destinations) {
+  return `<datalist id="destination-list-1">
+  ${destinations.map((elem) => `<option value="${elem}"></option>`).join('')}
+</datalist>`;
+}
+
+function createEventFormHeaderTemplate(eventTypes, destinations) {
+  const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
+  const destinationsList = destinations.map(({name}) => name);
+  const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
+
   return `<header class="event__header">
   <div class="event__type-wrapper">
     <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -8,57 +33,7 @@ function createEventFormHeaderTemplate() {
       <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
     </label>
     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-    <div class="event__type-list">
-      <fieldset class="event__type-group">
-        <legend class="visually-hidden">Event type</legend>
-
-        <div class="event__type-item">
-          <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-          <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-          <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-          <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-          <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-          <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-          <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-          <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-        </div>
-
-        <div class="event__type-item">
-          <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-          <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-        </div>
-      </fieldset>
-    </div>
+    ${eventTypesTemplate}
   </div>
 
   <div class="event__field-group  event__field-group--destination">
@@ -66,11 +41,7 @@ function createEventFormHeaderTemplate() {
       Flight
     </label>
     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
-    <datalist id="destination-list-1">
-      <option value="Amsterdam"></option>
-      <option value="Geneva"></option>
-      <option value="Chamonix"></option>
-    </datalist>
+    ${destinationsListTemplate}
   </div>
 
   <div class="event__field-group  event__field-group--time">
@@ -95,8 +66,12 @@ function createEventFormHeaderTemplate() {
 }
 
 export default class EventFormHeaderView {
+  constructor({destinations}) {
+    this.destinations = destinations;
+  }
+
   getTemplate() {
-    return createEventFormHeaderTemplate();
+    return createEventFormHeaderTemplate(TRIP_TYPES, this.destinations);
   }
 
   getElement() {

@@ -1,4 +1,14 @@
-const TRIP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'Sightseeing', 'Restaurant'];
+const TRIP_TYPES = [
+  {type: 'taxi'},
+  {type: 'bus'},
+  {type: 'train'},
+  {type: 'ship'},
+  {type: 'drive'},
+  {type : 'flight'},
+  {type: 'check-in'},
+  {type: 'sightseeing'},
+  {type: 'restaurant'}
+];
 
 const DESTINATIONS = ['Munich', 'Rome', 'Rhodes', 'Krakow', 'Ulcinj', 'Helsinki'];
 
@@ -11,6 +21,14 @@ const DATE_FORMATS = {
 
 const TRIP_COUNT = 4;
 
-const FAVOURITE_BTN_STATE_CLASS = '--active';
+const FAVOURITE_BTN_STATE_CLASSES = {
+  active: 'event__favorite-btn event__favorite-btn--active',
+  inactive: 'event__favorite-btn'
+};
 
-export { TRIP_TYPES, DESTINATIONS, DATE_FORMATS, TRIP_COUNT, FAVOURITE_BTN_STATE_CLASS };
+const turnFirstCharToUppercase = (string) => {
+  const result = string.replace(string[0], string[0].toUpperCase());
+  return result;
+};
+
+export { TRIP_TYPES, DESTINATIONS, DATE_FORMATS, TRIP_COUNT, FAVOURITE_BTN_STATE_CLASSES, turnFirstCharToUppercase };
