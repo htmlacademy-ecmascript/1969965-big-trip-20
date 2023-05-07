@@ -21,4 +21,9 @@ const formatDifference = (time) => {
   }
 };
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference };
+const turnFirstCharToUppercase = (string) => {
+  const result = string.replace(string[0], string[0].toUpperCase());
+  return result;
+};
+
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase };

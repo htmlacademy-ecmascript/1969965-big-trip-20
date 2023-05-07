@@ -28,19 +28,21 @@ export default class TripListPresenter {
     this.trips = [...this.tripsModel.getTrips()];
     this.offers = [...this.tripsModel.getOffers()];
     this.destinations = [...this.tripsModel.getDestinations()];
-
+    this.destinationsList = [...this.tripsModel.getDestinationsList()];
+    console.log(this.destinations);
     render(this.tripListComponent, this.tripListContainer);
 
-    for (let i = 0; i < this.trips.length; i++) {
+    for (let i = 1; i < this.trips.length; i++) {
       render(new TripItemView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.tripListComponent.getElement());
     }
 
     render(this.eventFormComponent, this.tripListComponent.getElement(), RenderPosition.AFTERBEGIN);
-    render(new EventFormHeaderView({destinations: this.destinations}), this.eventFormComponent.getChildElement(0));
+
+    render(new EventFormHeaderView({destinationsList: this.destinationsList, trip: this.trips[0], destinations: this.destinations}), this.eventFormComponent.getChildElement(0));
     render(this.eventFormDetailsComponent, this.eventFormComponent.getChildElement(0));
     render(this.eventFormOffersComponent, this.eventFormDetailsComponent.getElement());
     render(this.eventFormDestinationComponent, this.eventFormDetailsComponent.getElement());
-    render(new EventFormOfferItemView(), this.eventFormOffersComponent.getChildElement(1));
+    render(new EventFormOfferItemView({offers: this.offers, trip: this.trips[0], destinations: this.destinations}), this.eventFormOffersComponent.getElement());
     render(this.eventFormDestinationImagesComponent, this.eventFormDestinationComponent.getElement());
     render(new EventFormDestinationPictureView(), this.eventFormDestinationImagesComponent.getElement());
   }

@@ -1,6 +1,7 @@
 import { createElement } from '../render.js';
-import { turnFirstCharToUppercase } from '../constants.js';
-import { TRIP_TYPES } from '../constants.js';
+import { turnFirstCharToUppercase } from '../utils.js';
+import { TRIP_TYPES, DATE_FORMATS } from '../constants.js';
+import { formatDate } from '../utils.js';
 
 function createEventTypeItemTemplate(types) {
   return `<div class="event__type-list">
@@ -15,22 +16,24 @@ function createEventTypeItemTemplate(types) {
           </div>`;
 }
 
-function createDestinationsListTemplate(destinations) {
+function createDestinationsListTemplate(destinationsList) {
   return `<datalist id="destination-list-1">
-  ${destinations.map((elem) => `<option value="${elem}"></option>`).join('')}
+  ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
 </datalist>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinations) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, trip, destinations) {
+  const {destination, timeStart, timeEnd, type, price} = trip;
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
-  const destinationsList = destinations.map(({name}) => name);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
+  const currentDestination = destinations.filter((elem) => elem.id === destination);
+  const {name} = currentDestination[0];
 
   return `<header class="event__header">
   <div class="event__type-wrapper">
     <label class="event__type  event__type-btn" for="event-type-toggle-1">
       <span class="visually-hidden">Choose event type</span>
-      <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
     </label>
     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
     ${eventTypesTemplate}
@@ -38,18 +41,18 @@ function createEventFormHeaderTemplate(eventTypes, destinations) {
 
   <div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
-      Flight
+      ${turnFirstCharToUppercase(type)}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
     ${destinationsListTemplate}
   </div>
 
   <div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DATE_FORMATS.DAY_MONTH_YEAR_TIME_SLASHED)}">
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(timeEnd, DATE_FORMATS.DAY_MONTH_YEAR_TIME_SLASHED)}">
   </div>
 
   <div class="event__field-group  event__field-group--price">
@@ -57,7 +60,7 @@ function createEventFormHeaderTemplate(eventTypes, destinations) {
       <span class="visually-hidden">Price</span>
       &euro;
     </label>
-    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
   </div>
 
   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -66,12 +69,14 @@ function createEventFormHeaderTemplate(eventTypes, destinations) {
 }
 
 export default class EventFormHeaderView {
-  constructor({destinations}) {
+  constructor({destinationsList, trip, destinations}) {
+    this.destinationsList = destinationsList;
+    this.trip = trip;
     this.destinations = destinations;
   }
 
   getTemplate() {
-    return createEventFormHeaderTemplate(TRIP_TYPES, this.destinations);
+    return createEventFormHeaderTemplate(TRIP_TYPES, this.destinationsList, this.trip, this.destinations);
   }
 
   getElement() {

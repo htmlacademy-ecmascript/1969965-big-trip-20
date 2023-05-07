@@ -7,6 +7,7 @@ export default class TripsModel {
   trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
   offers = getMockOffers();
   destinations = getMockDestinations();
+  destinationsList = this.destinations.map(({name}) => name);
 
   getTrips() {
     return this.trips;
@@ -18,5 +19,9 @@ export default class TripsModel {
 
   getDestinations() {
     return this.destinations;
+  }
+
+  getDestinationsList() {
+    return this.destinationsList;
   }
 }
