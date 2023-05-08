@@ -1,5 +1,7 @@
 import { createElement } from '../render.js';
 import dayjs from 'dayjs';
+import { formatDate } from '../utils.js';
+import { DATE_FORMATS } from '../constants.js';
 
 function getTotalPrice(trips) {
   const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
@@ -10,6 +12,19 @@ function sortTrips(trips) {
   const sortedTrips = trips.sort((trip1, trip2) =>
     dayjs(trip1['timeStart'].valueOf()) - dayjs(trip2['timeStart'].valueOf()));
   return sortedTrips;
+}
+
+function getDatesTrack(trips) {
+  const sortedTrips = sortTrips(trips);
+  const startDate = formatDate(sortedTrips[0].timeStart, DATE_FORMATS.MONTH_DAY);
+  let endDate = null;
+  if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DATE_FORMATS.DAY);
+  } else {
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DATE_FORMATS.MONTH_DAY);
+  }
+
+  return {startDate, endDate};
 }
 
 function getDestinationsTrack(trips, destinations) {
@@ -42,11 +57,12 @@ function createDestinationsTrackTemplate(trips, destinations) {
 function createTripInfoTemplate(trips, destinations) {
   const total = getTotalPrice(trips);
   const destinationsTrack = createDestinationsTrackTemplate(trips, destinations);
+  const {startDate, endDate} = getDatesTrack(trips);
 
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
     ${destinationsTrack}  
-      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+      <p class="trip-info__dates">${startDate}&nbsp;&mdash;&nbsp;${endDate}</p>
   </div>
 
   <p class="trip-info__cost">
