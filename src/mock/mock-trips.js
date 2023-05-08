@@ -16,8 +16,8 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'flight',
     price: '200',
-    timeStart: '2019-07-13T12:45:00.845Z',
-    timeEnd: '2019-07-13T14:25:00.375Z',
+    timeStart: '2019-06-13T12:45:00.845Z',
+    timeEnd: '2019-06-13T14:25:00.375Z',
     isFavorite: true,
     offers: [4, 6]
   },
@@ -26,8 +26,8 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'check-in',
     price: '150',
-    timeStart: new Date(2023, 7, 9, 9, 20, 0),
-    timeEnd: new Date(2023, 7, 9, 10, 10, 0),
+    timeStart: '2019-08-13T15:45:00.845Z',
+    timeEnd: '2019-08-13T17:25:00.375Z',
     isFavorite: false,
     offers: []
   },
@@ -36,8 +36,8 @@ const mockTrips = [
     destination: getRandomNumber(6),
     type: 'sightseeing',
     price: '120',
-    timeStart: new Date(2023, 6, 15, 14, 0, 0),
-    timeEnd: new Date(2023, 6, 15, 16, 15, 0),
+    timeStart: '2019-09-13T10:40:00.845Z',
+    timeEnd: '2019-09-13T11:05:00.375Z',
     isFavorite: true,
     offers: [13]
   }

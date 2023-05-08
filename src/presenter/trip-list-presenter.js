@@ -7,7 +7,6 @@ import EventFormDetailsView from '../view/event-form-details-view.js';
 import EventFormOffersView from '../view/event-form-offers-view.js';
 import EventFormOfferItemView from '../view/event-form-offer-item-view.js';
 import EventFormDestinationView from '../view/event-form-destination-view.js';
-import EventFormDestinationImagesView from '../view/event-form-destination-images-view.js';
 import EventFormDestinationPictureView from '../view/event-form-destination-picture-view.js';
 import { RenderPosition } from '../render.js';
 
@@ -15,9 +14,7 @@ export default class TripListPresenter {
   tripListComponent = new TripListView();
   eventFormComponent = new EventFormView();
   eventFormDetailsComponent = new EventFormDetailsView();
-  // eventFormDestinationComponent = new EventFormDestinationView();
   eventFormOffersComponent = new EventFormOffersView();
-  eventFormDestinationImagesComponent = new EventFormDestinationImagesView();
 
   constructor({tripListContainer, tripsModel}) {
     this.tripListContainer = tripListContainer;
@@ -44,7 +41,6 @@ export default class TripListPresenter {
     render(this.eventFormOffersComponent, this.eventFormDetailsComponent.getElement());
     render(this.eventFormDestinationComponent, this.eventFormDetailsComponent.getElement());
     render(new EventFormOfferItemView({offers: this.offers, trip: this.trips[0], destinations: this.destinations}), this.eventFormOffersComponent.getElement());
-    render(this.eventFormDestinationImagesComponent, this.eventFormDestinationComponent.getElement());
-    render(new EventFormDestinationPictureView({trip: this.trips[0], destinations: this.destinations}), this.eventFormDestinationImagesComponent.getElement());
+    render(new EventFormDestinationPictureView({trip: this.trips[0], destinations: this.destinations}), this.eventFormDestinationComponent.getElement());
   }
 }

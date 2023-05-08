@@ -5,8 +5,11 @@ function createEventFormDestinationPictureTemplate(trip, destinations) {
   const currentDestination = destinations.filter((elem) => elem.id === destination);
   const images = currentDestination[0].images;
 
-  return `${images.map(({src, description}) => `<img class="event__photo" src="${src}"
-  alt="${description}"></img>`).join('')}`;
+  return `<div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${images.map(({src, description}) => `<img class="event__photo" src="${src}"
+            alt="${description}"></img>`).join('')}</div>
+          </div>`;
 }
 
 export default class EventFormDestinationPictureView {

@@ -1,9 +1,7 @@
-import TripInfoView from './view/trip-info-view.js';
-import { render } from './render.js';
-import { RenderPosition } from './render.js';
 import FiltersPresenter from './presenter/filters-presenter.js';
 import SortingPanelPresenter from './presenter/sorting-panel-presenter.js';
 import TripListPresenter from './presenter/trip-list-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 
 const infoHeaderElement = document.querySelector('.trip-main');
@@ -17,9 +15,9 @@ const sortingPresenter = new SortingPanelPresenter({sortingContainer: mainSectio
 const tripListPresenter = new TripListPresenter({
   tripListContainer: mainSectionElement,
   tripsModel});
+const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel});
 
-render(new TripInfoView(), infoHeaderElement, RenderPosition.AFTERBEGIN);
-
+tripInfoPresenter.init();
 filtersPresenter.init();
 sortingPresenter.init();
 tripListPresenter.init();

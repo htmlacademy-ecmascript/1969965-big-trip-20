@@ -20,11 +20,13 @@ const DATE_FORMATS = {
   DAY_MONTH_YEAR_TIME_SLASHED: 'DD/MM/YY HH:mm'
 };
 
-const TRIP_COUNT = 4;
+const TRIP_COUNT = 3;
 
 const FAVOURITE_BTN_STATE_CLASSES = {
   active: 'event__favorite-btn event__favorite-btn--active',
   inactive: 'event__favorite-btn'
 };
 
-export { TRIP_TYPES, DESTINATIONS, DATE_FORMATS, TRIP_COUNT, FAVOURITE_BTN_STATE_CLASSES };
+const RANDOM_NUM_RANGE = 300;
+
+export { TRIP_TYPES, DESTINATIONS, DATE_FORMATS, TRIP_COUNT, FAVOURITE_BTN_STATE_CLASSES, RANDOM_NUM_RANGE };
