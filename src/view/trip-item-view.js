@@ -1,6 +1,6 @@
 import { createElement } from '../render.js';
 import { formatDate, findDifference, formatDifference } from '../utils.js';
-import { DATE_FORMATS, FAVOURITE_BTN_STATE_CLASSES } from '../constants.js';
+import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
@@ -33,21 +33,21 @@ function createTripItemTemplate(trip, off, destinations) {
   const offersTemplate = createTripOffersTemplate(getOffers());
 
   const favoriteClassName = isFavorite
-    ? FAVOURITE_BTN_STATE_CLASSES.active
-    : FAVOURITE_BTN_STATE_CLASSES.inactive;
+    ? FavoriteBtnStateClasses.ACTIVE
+    : FavoriteBtnStateClasses.INACTIVE;
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${formatDate(timeStart, DATE_FORMATS.YEAR_MONTH_DAY)}">${formatDate(timeStart, DATE_FORMATS.DAY_MONTH)}</time>
+    <time class="event__date" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY)}">${formatDate(timeStart, DateFormats.DAY_MONTH)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${cityName}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatDate(timeStart, DATE_FORMATS.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DATE_FORMATS.HOUR_MINUTES)}</time>
+        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormats.HOUR_MINUTES)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${formatDate(timeStart, DATE_FORMATS.HOUR_MINUTES)}">${formatDate(timeEnd, DATE_FORMATS.HOUR_MINUTES)}</time>
+        <time class="event__end-time" datetime="${formatDate(timeStart, DateFormats.HOUR_MINUTES)}">${formatDate(timeEnd, DateFormats.HOUR_MINUTES)}</time>
       </p>
       <p class="event__duration">${formatDifference(findDifference(timeEnd, timeStart))}</p>
     </div>

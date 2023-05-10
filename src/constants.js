@@ -1,18 +1,6 @@
-const TRIP_TYPES = [
-  {type: 'taxi'},
-  {type: 'bus'},
-  {type: 'train'},
-  {type: 'ship'},
-  {type: 'drive'},
-  {type : 'flight'},
-  {type: 'check-in'},
-  {type: 'sightseeing'},
-  {type: 'restaurant'}
-];
+const tripTypes = ['taxi', 'bus','train', 'ship', 'drive', 'flight','check-in', 'sightseeing', 'restaurant'];
 
-const DESTINATIONS = ['Munich', 'Rome', 'Rhodes', 'Krakow', 'Ulcinj', 'Helsinki'];
-
-const DATE_FORMATS = {
+const DateFormats = {
   DAY_MONTH : 'MMM D',
   HOUR_MINUTES: 'H:mm',
   YEAR_MONTH_DAY: 'YY-MM-DD',
@@ -24,11 +12,29 @@ const DATE_FORMATS = {
 
 const TRIP_COUNT = 3;
 
-const FAVOURITE_BTN_STATE_CLASSES = {
-  active: 'event__favorite-btn event__favorite-btn--active',
-  inactive: 'event__favorite-btn'
+const FavoriteBtnStateClasses = {
+  ACTIVE: 'event__favorite-btn event__favorite-btn--active',
+  INACTIVE: 'event__favorite-btn'
 };
 
 const RANDOM_NUM_RANGE = 300;
 
-export { TRIP_TYPES, DESTINATIONS, DATE_FORMATS, TRIP_COUNT, FAVOURITE_BTN_STATE_CLASSES, RANDOM_NUM_RANGE };
+const BLANK_EVENT_FORM_DATA = {
+  type: 'taxi',
+  name: '',
+  timeStart: '',
+  timeEnd: '',
+  price: '',
+  offers: [],
+  description: '',
+  isArchive: false,
+  isFavorite: false,
+  id: '',
+  title: ''
+};
+
+function getBlankEventFormData() {
+  return BLANK_EVENT_FORM_DATA;
+}
+
+export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData };

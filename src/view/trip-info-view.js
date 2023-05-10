@@ -1,7 +1,7 @@
 import { createElement } from '../render.js';
 import dayjs from 'dayjs';
 import { formatDate } from '../utils.js';
-import { DATE_FORMATS } from '../constants.js';
+import { DateFormats } from '../constants.js';
 
 function getTotalPrice(trips) {
   const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
@@ -16,12 +16,12 @@ function sortTrips(trips) {
 
 function getDatesTrack(trips) {
   const sortedTrips = sortTrips(trips);
-  const startDate = formatDate(sortedTrips[0].timeStart, DATE_FORMATS.MONTH_DAY);
+  const startDate = formatDate(sortedTrips[0].timeStart, DateFormats.MONTH_DAY);
   let endDate = null;
   if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DATE_FORMATS.DAY);
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.DAY);
   } else {
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DATE_FORMATS.MONTH_DAY);
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.MONTH_DAY);
   }
 
   return {startDate, endDate};

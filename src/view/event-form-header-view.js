@@ -1,13 +1,13 @@
 import { createElement } from '../render.js';
 import { turnFirstCharToUppercase } from '../utils.js';
-import { TRIP_TYPES, DATE_FORMATS } from '../constants.js';
+import { tripTypes, DateFormats } from '../constants.js';
 import { formatDate } from '../utils.js';
 
 function createEventTypeItemTemplate(types) {
   return `<div class="event__type-list">
             <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${types.map(({type}) =>
+            ${types.map((type) =>
     `<div class="event__type-item">
                 <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
                 <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${turnFirstCharToUppercase(type)}</label>
@@ -49,10 +49,10 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, trip, desti
 
   <div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DATE_FORMATS.DAY_MONTH_YEAR_TIME_SLASHED)}">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(timeEnd, DATE_FORMATS.DAY_MONTH_YEAR_TIME_SLASHED)}">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(timeEnd, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
   </div>
 
   <div class="event__field-group  event__field-group--price">
@@ -76,7 +76,7 @@ export default class EventFormHeaderView {
   }
 
   getTemplate() {
-    return createEventFormHeaderTemplate(TRIP_TYPES, this.destinationsList, this.trip, this.destinations);
+    return createEventFormHeaderTemplate(tripTypes, this.destinationsList, this.trip, this.destinations);
   }
 
   getElement() {
