@@ -4,24 +4,24 @@ import { getMockDestinations } from '../mock/mock-destinations.js';
 import { TRIP_COUNT } from '../constants.js';
 
 export default class TripsModel {
-  trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
-  offers = getMockOffers();
-  destinations = getMockDestinations();
-  destinationsList = this.destinations.map(({name}) => name);
+  #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
+  #offers = getMockOffers();
+  #destinations = getMockDestinations();
+  #destinationsList = this.#destinations.map(({name}) => name);
 
-  getTrips() {
-    return this.trips;
+  get trips() {
+    return this.#trips;
   }
 
-  getOffers() {
-    return this.offers;
+  get offers() {
+    return this.#offers;
   }
 
-  getDestinations() {
-    return this.destinations;
+  get destinations() {
+    return this.#destinations;
   }
 
-  getDestinationsList() {
-    return this.destinationsList;
+  get destinationsList() {
+    return this.#destinationsList;
   }
 }

@@ -12,36 +12,39 @@ import EventFormDestinationPictureView from '../view/event-form-destination-pict
 import { RenderPosition } from '../framework/render.js';
 
 export default class TripListPresenter {
-  tripListComponent = new TripListView();
-  eventFormComponent = new EventFormView();
-  eventFormDetailsComponent = new EventFormDetailsView();
-  eventFormOffersComponent = new EventFormOffersView();
+  #tripListContainer;
+  #tripsModel;
+
+  #tripListComponent = new TripListView();
+  #eventFormComponent = new EventFormView();
+  #eventFormDetailsComponent = new EventFormDetailsView();
+  #eventFormOffersComponent = new EventFormOffersView();
 
   constructor({tripListContainer, tripsModel}) {
-    this.tripListContainer = tripListContainer;
-    this.tripsModel = tripsModel;
+    this.#tripListContainer = tripListContainer;
+    this.#tripsModel = tripsModel;
   }
 
   init() {
-    this.trips = [...this.tripsModel.getTrips()];
-    this.offers = [...this.tripsModel.getOffers()];
-    this.destinations = [...this.tripsModel.getDestinations()];
-    this.destinationsList = [...this.tripsModel.getDestinationsList()];
+    this.trips = [...this.#tripsModel.trips];
+    this.offers = [...this.#tripsModel.offers];
+    this.destinations = [...this.#tripsModel.destinations];
+    this.destinationsList = [...this.#tripsModel.destinationsList];
     this.eventFormDestinationComponent = new EventFormDestinationView({trip: this.trips[0], destinations: this.destinations});
 
-    render(this.tripListComponent, this.tripListContainer);
+    render(this.#tripListComponent, this.#tripListContainer);
 
     for (let i = 1; i < this.trips.length; i++) {
-      render(new TripItemView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.tripListComponent.element);
+      render(new TripItemView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.#tripListComponent.element);
     }
 
-    render(this.eventFormComponent, this.tripListComponent.element, RenderPosition.AFTERBEGIN);
+    render(this.#eventFormComponent, this.#tripListComponent.element, RenderPosition.AFTERBEGIN);
 
-    render(new EventFormHeaderView({destinationsList: this.destinationsList, trip: this.trips[0], destinations: this.destinations}), this.eventFormComponent.getChildElement(0));
-    render(this.eventFormDetailsComponent, this.eventFormComponent.getChildElement(0));
-    render(this.eventFormOffersComponent, this.eventFormDetailsComponent.element);
-    render(this.eventFormDestinationComponent, this.eventFormDetailsComponent.element);
-    render(new EventFormOfferItemView({offers: this.offers, trip: this.trips[0], destinations: this.destinations}), this.eventFormOffersComponent.element);
+    render(new EventFormHeaderView({destinationsList: this.destinationsList, trip: this.trips[0], destinations: this.destinations}), this.#eventFormComponent.getChildElement(0));
+    render(this.#eventFormDetailsComponent, this.#eventFormComponent.getChildElement(0));
+    render(this.#eventFormOffersComponent, this.#eventFormDetailsComponent.element);
+    render(this.eventFormDestinationComponent, this.#eventFormDetailsComponent.element);
+    render(new EventFormOfferItemView({offers: this.offers, trip: this.trips[0], destinations: this.destinations}), this.#eventFormOffersComponent.element);
     render(new EventFormDestinationPictureView({trip: this.trips[0], destinations: this.destinations}), this.eventFormDestinationComponent.element);
   }
 }
