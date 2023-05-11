@@ -1,7 +1,6 @@
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
-import { RenderPosition } from '../render.js';
-
+import { RenderPosition } from '../framework/render.js';
 export default class TripInfoPresenter {
   constructor({infoContainer, tripsModel}) {
     this.infoContainer = infoContainer;

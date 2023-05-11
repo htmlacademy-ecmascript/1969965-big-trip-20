@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createEventFormOffersTemplate() {
   return `<section class="event__section  event__section--offers">
@@ -6,25 +6,9 @@ function createEventFormOffersTemplate() {
           </section>`;
 }
 
-export default class EventFormOffersView {
-  getTemplate() {
+export default class EventFormOffersView extends AbstractView {
+  get template() {
     return createEventFormOffersTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  getChildElement(idx) {
-    return this.element.children[idx];
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
 

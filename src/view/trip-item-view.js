@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import { formatDate, findDifference, formatDifference } from '../utils.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
 
@@ -69,26 +69,19 @@ function createTripItemTemplate(trip, off, destinations) {
 </li>`;
 }
 
-export default class TripItemView {
+export default class TripItemView extends AbstractView {
+  #trip;
+  #offers;
+  #destinations;
+
   constructor({trip, offers, destinations}) {
-    this.trip = trip;
-    this.offers = offers;
-    this.destinations = destinations;
+    super();
+    this.#trip = trip;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createTripItemTemplate(this.trip, this.offers, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTripItemTemplate(this.#trip, this.#offers, this.#destinations);
   }
 }

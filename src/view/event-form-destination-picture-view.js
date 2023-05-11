@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createEventFormDestinationPictureTemplate(trip, destinations) {
   const {destination} = trip;
@@ -12,26 +12,18 @@ function createEventFormDestinationPictureTemplate(trip, destinations) {
           </div>`;
 }
 
-export default class EventFormDestinationPictureView {
+export default class EventFormDestinationPictureView extends AbstractView {
+  #trip;
+  #destinations;
+
   constructor({trip, destinations}) {
-    this.trip = trip;
-    this.destinations = destinations;
+    super();
+    this.#trip = trip;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createEventFormDestinationPictureTemplate(this.trip, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEventFormDestinationPictureTemplate(this.#trip, this.#destinations);
   }
 }
 

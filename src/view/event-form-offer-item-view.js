@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createEventFormOfferItemTemplate(offers, trip) {
   const currentOffers = offers.filter((elem) => elem.type === trip.type);
@@ -14,27 +14,20 @@ function createEventFormOfferItemTemplate(offers, trip) {
 </div>`).join('')} </div>`;
 }
 
-export default class EventFormOfferItemView {
+export default class EventFormOfferItemView extends AbstractView {
+  #offers;
+  #trip;
+  #destinations;
+
   constructor({offers, trip, destinations}) {
-    this.offers = offers;
-    this.trip = trip;
-    this.destinations = destinations;
+    super();
+    this.#offers = offers;
+    this.#trip = trip;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createEventFormOfferItemTemplate(this.offers, this.trip, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEventFormOfferItemTemplate(this.#offers, this.#trip, this.#destinations);
   }
 }
 

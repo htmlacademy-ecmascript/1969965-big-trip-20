@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createSortingItemTemplate() {
   return `<div class="trip-sort__item  trip-sort__item--day">
@@ -7,20 +7,8 @@ function createSortingItemTemplate() {
 </div>`;
 }
 
-export default class SortingItemView {
-  getTemplate() {
+export default class SortingItemView extends AbstractView {
+  get template() {
     return createSortingItemTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

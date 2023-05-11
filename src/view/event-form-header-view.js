@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
 import { formatDate } from '../utils.js';
@@ -68,27 +68,20 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, trip, desti
 </header>`;
 }
 
-export default class EventFormHeaderView {
+export default class EventFormHeaderView extends AbstractView {
+  #destinationsList;
+  #trip;
+  #destinations;
+
   constructor({destinationsList, trip, destinations}) {
-    this.destinationsList = destinationsList;
-    this.trip = trip;
-    this.destinations = destinations;
+    super();
+    this.#destinationsList = destinationsList;
+    this.#trip = trip;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createEventFormHeaderTemplate(tripTypes, this.destinationsList, this.trip, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEventFormHeaderTemplate(tripTypes, this.#destinationsList, this.#trip, this.#destinations);
   }
 }
 

@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 import { formatDate } from '../utils.js';
 import { DateFormats } from '../constants.js';
@@ -71,26 +71,17 @@ function createTripInfoTemplate(trips, destinations) {
 </section>`;
 }
 
-export default class TripInfoView {
+export default class TripInfoView extends AbstractView {
+  #trips;
+  #destinations;
   constructor({trips, destinations}) {
-    this.trips = trips;
-    this.destinations = destinations;
+    super();
+    this.#trips = trips;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createTripInfoTemplate(this.trips, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTripInfoTemplate(this.#trips, this.#destinations);
   }
 }
 
