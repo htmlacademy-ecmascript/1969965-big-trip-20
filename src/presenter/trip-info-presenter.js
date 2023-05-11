@@ -4,6 +4,8 @@ import { RenderPosition } from '../framework/render.js';
 export default class TripInfoPresenter {
   #infoContainer;
   #tripsModel;
+  #trips;
+  #destinations;
 
   constructor({infoContainer, tripsModel}) {
     this.#infoContainer = infoContainer;
@@ -11,9 +13,9 @@ export default class TripInfoPresenter {
   }
 
   init() {
-    this.trips = [...this.#tripsModel.trips];
-    this.destinations = [...this.#tripsModel.destinations];
+    this.#trips = [...this.#tripsModel.trips];
+    this.#destinations = [...this.#tripsModel.destinations];
 
-    render(new TripInfoView({trips: this.trips, destinations: this.destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
+    render(new TripInfoView({trips: this.#trips, destinations: this.#destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 }
