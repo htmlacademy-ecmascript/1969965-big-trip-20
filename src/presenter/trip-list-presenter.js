@@ -40,7 +40,7 @@ export default class TripListPresenter {
     render(this.#tripListComponent, this.#tripListContainer);
 
     for (let i = 1; i < this.#trips.length; i++) {
-      render(new TripItemView({trip: this.#trips[i], offers: this.#offers, destinations: this.#destinations}), this.#tripListComponent.element);
+      this.#renderTrips(this.#trips[i], this.#offers, this.#destinations);
     }
 
     render(this.#eventFormComponent, this.#tripListComponent.element, RenderPosition.AFTERBEGIN);
@@ -51,5 +51,10 @@ export default class TripListPresenter {
     render(this.#eventFormDestinationComponent, this.#eventFormDetailsComponent.element);
     render(new EventFormOfferItemView({offers: this.#offers, trip: this.#trips[0], destinations: this.#destinations}), this.#eventFormOffersComponent.element);
     render(new EventFormDestinationPictureView({trip: this.#trips[0], destinations: this.#destinations}), this.#eventFormDestinationComponent.element);
+  }
+
+  #renderTrips(trip, offers, destinations) {
+    const tripComponent = new TripItemView({trip, offers, destinations});
+    render(tripComponent, this.#tripListComponent.element);
   }
 }
