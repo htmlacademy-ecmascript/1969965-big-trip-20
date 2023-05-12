@@ -145,7 +145,7 @@ export default class EventFormView extends AbstractView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onRollUpBtnClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
-    this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {

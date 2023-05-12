@@ -31,11 +31,21 @@ export default class TripListPresenter {
   }
 
   #renderTrips(trip, offers, destinations, destinationsList) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToTrip();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const tripComponent = new TripItemView({trip, offers, destinations, onEditClick: () => {
       replaceTripToForm();
+      document.addEventListener('keydown', escKeyDownHandler);
     }});
     const eventFormComponent = new EventFormView({trip, offers, destinations, destinationsList, onRollUpBtnClick: () => {
       replaceFormToTrip();
+      document.removeEventListener('keydown', escKeyDownHandler);
     }});
 
     render(tripComponent, this.#tripListComponent.element);
