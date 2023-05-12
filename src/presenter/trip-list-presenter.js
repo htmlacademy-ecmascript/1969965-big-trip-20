@@ -34,7 +34,9 @@ export default class TripListPresenter {
     const tripComponent = new TripItemView({trip, offers, destinations, onEditClick: () => {
       replaceTripToForm();
     }});
-    const eventFormComponent = new EventFormView({trip, offers, destinations, destinationsList});
+    const eventFormComponent = new EventFormView({trip, offers, destinations, destinationsList, onRollUpBtnClick: () => {
+      replaceFormToTrip();
+    }});
 
     render(tripComponent, this.#tripListComponent.element);
 

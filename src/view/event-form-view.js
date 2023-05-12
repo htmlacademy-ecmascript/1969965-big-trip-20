@@ -97,7 +97,6 @@ function createEventFormDescriptionTemplate(destinations, destination) {
 }
 
 function createEventFormDestinationPictureTemplate(destination, destinations) {
-  // const {destination} = trip;
   const currentDestination = destinations.filter((elem) => elem.id === destination);
   const images = currentDestination[0].images;
 
@@ -113,8 +112,6 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
   const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price);
   const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
-  // const currentDestination = destinations.filter((elem) => elem.id === destination);
-  // const description = currentDestination[0].description;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -136,18 +133,34 @@ export default class EventFormView extends AbstractView {
   #trip;
   #destinations;
   #offers;
+  #handleFormSubmit;
+  #handleFormClick;
 
-  constructor({destinationsList, trip, destinations, offers}) {
+  constructor({destinationsList, trip, destinations, offers, onFormSubmit, onRollUpBtnClick}) {
     super();
     this.#destinationsList = destinationsList;
     this.#trip = trip;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClick = onRollUpBtnClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
+    this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
     return createEventFormTemplate(tripTypes, this.#destinationsList, this.#trip, this.#destinations, this.#offers);
   }
+
+  #rollUpBtnHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
   getChildElement(idx) {
     return this.element.children[idx];
