@@ -10,7 +10,7 @@ const DateFormats = {
   DAY: 'D'
 };
 
-const TRIP_COUNT = 3;
+const TRIP_COUNT = 4;
 
 const FavoriteBtnStateClasses = {
   ACTIVE: 'event__favorite-btn event__favorite-btn--active',
