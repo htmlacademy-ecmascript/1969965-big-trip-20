@@ -161,8 +161,4 @@ export default class EventFormView extends AbstractView {
     evt.preventDefault();
     this.#handleFormSubmit();
   };
-
-  getChildElement(idx) {
-    return this.element.children[idx];
-  }
 }
