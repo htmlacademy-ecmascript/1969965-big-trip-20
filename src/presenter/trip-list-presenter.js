@@ -1,4 +1,5 @@
 import { render } from '../framework/render.js';
+import { updateItem } from '../utils.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 
@@ -41,5 +42,10 @@ export default class TripListPresenter {
     this.#tripPresenters.forEach((presenter) => presenter.destroy());
     this.#tripPresenters.clear();
   }
+
+  #handleTripChange = (updatedTrip) => {
+    this.#trips = updateItem(this.#trips, updatedTrip);
+    this.#tripPresenters.get(updatedTrip.id).init(updatedTrip);
+  };
 }
 
