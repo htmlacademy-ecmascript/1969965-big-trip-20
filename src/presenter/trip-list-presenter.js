@@ -10,6 +10,7 @@ export default class TripListPresenter {
   #destinations;
   #destinationsList;
   #tripListComponent;
+  #tripPresenters = new Map();
 
   constructor({tripListContainer, tripsModel}) {
     this.#tripListContainer = tripListContainer;
@@ -33,6 +34,12 @@ export default class TripListPresenter {
   #renderTrip(trip, offers, destinations, destinationsList) {
     const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element});
     tripPresenter.init(trip, offers, destinations, destinationsList);
+    this.#tripPresenters.set(trip.id, tripPresenter);
+  }
+
+  #clearTripList() {
+    this.#tripPresenters.forEach((presenter) => presenter.destroy());
+    this.#tripPresenters.clear();
   }
 }
 
