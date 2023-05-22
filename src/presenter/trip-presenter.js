@@ -11,7 +11,7 @@ export default class TripPresenter {
   #destinations;
   #destinationsList;
 
-  contructor ({tripContainer}) {
+  constructor ({tripContainer}) {
     this.#tripContainer = tripContainer;
   }
 
@@ -36,21 +36,21 @@ export default class TripPresenter {
     replace(this.#tripComponent, this.#eventFormComponent);
   }
 
-  #handleEditClick() {
+  #handleEditClick = () => {
     this.#replaceTripToForm();
     document.addEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
-  #handleRollUpBtnClick() {
+  #handleRollUpBtnClick = () => {
     this.#replaceFormToTrip();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
-  #escKeyDownHandler(evt) {
+  #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#replaceFormToTrip();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
-  }
+  };
 }
