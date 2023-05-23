@@ -33,7 +33,7 @@ export default class TripListPresenter {
   }
 
   #renderTrip(trip, offers, destinations, destinationsList) {
-    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element});
+    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange});
     tripPresenter.init(trip, offers, destinations, destinationsList);
     this.#tripPresenters.set(trip.id, tripPresenter);
   }
@@ -43,9 +43,9 @@ export default class TripListPresenter {
     this.#tripPresenters.clear();
   }
 
-  #handleTripChange = (updatedTrip) => {
+  #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
     this.#trips = updateItem(this.#trips, updatedTrip);
-    this.#tripPresenters.get(updatedTrip.id).init(updatedTrip);
+    this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
   };
 }
 

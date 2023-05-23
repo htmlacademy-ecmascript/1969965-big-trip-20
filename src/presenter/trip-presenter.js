@@ -10,9 +10,11 @@ export default class TripPresenter {
   #offers;
   #destinations;
   #destinationsList;
+  #handleDataChange;
 
-  constructor ({tripContainer}) {
+  constructor ({tripContainer, onDataChange}) {
     this.#tripContainer = tripContainer;
+    this.#handleDataChange = onDataChange;
   }
 
   init (trip, offers, destinations, destinationsList) {
@@ -23,9 +25,9 @@ export default class TripPresenter {
     const prevTripComponent = this.#tripComponent;
     const prevEventFormComponent = this.#eventFormComponent;
 
-    this.#tripComponent = new TripItemView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, onEditClick: this.#handleEditClick});
+    this.#tripComponent = new TripItemView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, onEditClick: this.#handleEditClick, onFavoriteClick: this.#handleFavoriteClick});
 
-    this.#eventFormComponent = new EventFormView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onRollUpBtnClick: this.#handleRollUpBtnClick});
+    this.#eventFormComponent = new EventFormView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onRollUpBtnClick: this.#handleRollUpBtnClick, onFormSubmit: this.#handleFormSubmit});
 
     if (prevTripComponent === null || prevEventFormComponent === null) {
       render(this.#tripComponent, this.#tripContainer);
@@ -73,5 +75,14 @@ export default class TripPresenter {
       this.#replaceFormToTrip();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite}, this.#offers, this.#destinations, this.#destinationsList);
+  };
+
+  #handleFormSubmit = () => {
+    this.#handleDataChange(this.#trip, this.#offers, this.#destinations, this.#destinationsList);
+    this.#replaceFormToTrip();
   };
 }
