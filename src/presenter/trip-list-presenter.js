@@ -32,8 +32,12 @@ export default class TripListPresenter {
     }
   }
 
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
+  };
+
   #renderTrip(trip, offers, destinations, destinationsList) {
-    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange});
+    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange, onModeChange: this.#handleModeChange});
     tripPresenter.init(trip, offers, destinations, destinationsList);
     this.#tripPresenters.set(trip.id, tripPresenter);
   }

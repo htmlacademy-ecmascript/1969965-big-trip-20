@@ -2,6 +2,11 @@ import { render, replace, remove } from '../framework/render.js';
 import TripItemView from '../view/trip-item-view.js';
 import EventFormView from '../view/event-form-view.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class TripPresenter {
   #tripContainer;
   #tripComponent = null;
@@ -11,10 +16,13 @@ export default class TripPresenter {
   #destinations;
   #destinationsList;
   #handleDataChange;
+  #handleModeChange;
+  #mode = Mode.DEFAULT;
 
-  constructor ({tripContainer, onDataChange}) {
+  constructor ({tripContainer, onDataChange, onModeChange}) {
     this.#tripContainer = tripContainer;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init (trip, offers, destinations, destinationsList) {
@@ -34,11 +42,11 @@ export default class TripPresenter {
       return;
     }
 
-    if (this.#tripContainer.contains(prevTripComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#tripComponent, prevTripComponent);
     }
 
-    if (this.#tripContainer.contains(prevEventFormComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#eventFormComponent, prevEventFormComponent);
     }
 
@@ -51,12 +59,21 @@ export default class TripPresenter {
     remove(this.#eventFormComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToTrip();
+    }
+  }
+
   #replaceTripToForm() {
     replace(this.#eventFormComponent, this.#tripComponent);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToTrip() {
     replace(this.#tripComponent, this.#eventFormComponent);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleEditClick = () => {
