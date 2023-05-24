@@ -20,17 +20,14 @@ const FavoriteBtnStateClasses = {
 const RANDOM_NUM_RANGE = 300;
 
 const BLANK_EVENT_FORM_DATA = {
+  id: '',
+  destination: '',
   type: 'taxi',
-  name: '',
+  price: '',
   timeStart: '',
   timeEnd: '',
-  price: '',
-  offers: [],
-  description: '',
-  isArchive: false,
   isFavorite: false,
-  id: '',
-  title: ''
+  offers: []
 };
 
 function getBlankEventFormData() {

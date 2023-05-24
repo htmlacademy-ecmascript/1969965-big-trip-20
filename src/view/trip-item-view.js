@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDate, findDifference, formatDifference } from '../utils.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
+import { getBlankEventFormData } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
@@ -76,7 +77,7 @@ export default class TripItemView extends AbstractView {
   #handleEditClick;
   #handleFavoriteClick;
 
-  constructor({trip, offers, destinations, onEditClick, onFavoriteClick}) {
+  constructor({trip = getBlankEventFormData(), offers, destinations, onEditClick, onFavoriteClick}) {
     super();
     this.#trip = trip;
     this.#offers = offers;
