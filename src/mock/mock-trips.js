@@ -49,7 +49,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [15]
   },
   {
     id: 6,
@@ -59,7 +59,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [5]
   },
   {
     id: 7,
@@ -79,17 +79,17 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [9, 10]
   },
   {
     id: 9,
     destination: getRandomNumber(6),
-    type: 'sightseeng',
+    type: 'sightseeing',
     price: 100,
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [13]
   },
   {
     id: 10,
@@ -99,7 +99,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [16]
   },
   {
     id: 11,
@@ -109,7 +109,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [11]
   },
   {
     id: 12,
@@ -119,7 +119,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [1, 2]
   },
   {
     id: 13,
@@ -129,7 +129,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [15, 17]
   },
   {
     id: 14,
@@ -139,7 +139,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [13, 14]
   },
   {
     id: 15,
@@ -149,7 +149,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [6]
   },
   {
     id: 16,
@@ -159,7 +159,7 @@ const mockTrips = [
     timeStart: '2019-07-10T22:55:56.845Z',
     timeEnd: '2019-07-11T11:22:13.375Z',
     isFavorite: true,
-    offers: [3]
+    offers: [1]
   },
 ];
 

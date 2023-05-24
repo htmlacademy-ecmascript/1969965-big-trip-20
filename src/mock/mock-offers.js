@@ -93,6 +93,26 @@ const mockOffers = [
         id: 14
       }
     ]
+  },
+  {
+    type: 'bus',
+    offers: [
+      {
+        title: 'Smaltalk with driver',
+        price: 10,
+        id: 15
+      },
+      {
+        title: 'Seat near the window',
+        price: 15,
+        id: 16
+      },
+      {
+        title: 'Sanitar station',
+        price: 30,
+        id: 17
+      }
+    ]
   }
 ];
 
