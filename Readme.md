@@ -1,9 +1,9 @@
 # Проект «Большое путешествие»
 
 * Студент: [Юлия Карнаусова](https://up.htmlacademy.ru/ecmascript/20/user/1969965).
-=======
+
 * Наставник: [Дмитрий Гуляев](https://htmlacademy.ru/profile/dima).
->>>>>>> 4dc8baca2f0ee1f3f3703663feb88c574f78822e
+
 
 ---
 
