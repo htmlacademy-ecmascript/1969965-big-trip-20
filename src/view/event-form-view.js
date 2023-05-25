@@ -1,7 +1,9 @@
-import AbstractView from '../framework/view/abstract-view';
+// import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
 import { formatDate } from '../utils.js';
+import { getBlankEventFormData } from '../constants.js';
 
 function createEventTypeItemTemplate(types) {
   return `<div class="event__type-list">
@@ -72,16 +74,28 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
 
 function createEventFormOfferItemTemplate(offers, trip) {
   const currentOffers = offers.filter((elem) => elem.type === trip.type);
+  const chosenOffers = trip.offers;
+
+  function isItemChecked (id) {
+    let result;
+    chosenOffers.forEach((offer) => {
+      if (offer === id) {
+        result = 'checked = \'checked\'';
+      }
+    });
+    return result;
+  }
 
   return `<div class="event__available-offers">
     ${currentOffers[0].offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" checked>
-  <label class="event__offer-label" for="event-offer-${id}-1">
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id)}>
+  <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
   </label>
 </div>`).join('')} </div>`;
+
 }
 
 function createEventFormDescriptionTemplate(destinations, destination) {
@@ -128,28 +142,33 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
 </li>`;
 }
 
-export default class EventFormView extends AbstractView {
+export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
-  #trip;
   #destinations;
   #offers;
   #handleFormSubmit;
   #handleFormClick;
 
-  constructor({destinationsList, trip, destinations, offers, onFormSubmit, onRollUpBtnClick}) {
+  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick}) {
     super();
     this.#destinationsList = destinationsList;
-    this.#trip = trip;
+    this._setState(EventFormView.parseTripToState(trip));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onRollUpBtnClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
-    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEventFormTemplate(tripTypes, this.#destinationsList, this.#trip, this.#destinations, this.#offers);
+    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
+    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
   }
 
   #rollUpBtnHandler = (evt) => {
@@ -159,6 +178,36 @@ export default class EventFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#trip, this.#offers, this.#destinations, this.#destinationsList);
+    this.#handleFormSubmit(EventFormView.parseStateToTrip(this._state), this.#offers, this.#destinations, this.#destinationsList);
   };
+
+  #eventTypeListHandler = (evt) => {
+    if (evt.target.matches('.event__type-input')){
+      this.updateElement({
+        type: evt.target.value,
+      });
+      this._setState({
+        offers: [],
+      });
+    }
+  };
+
+  #offerCheckHandler = (evt) => {
+    const checkElements = this.element.querySelectorAll('.event__offer-checkbox');
+    if (evt.target.matches('.event__offer-checkbox')) {
+      const offers = [];
+      checkElements.forEach((offer) => offer.checked ? offers.push(offer.id.slice(12)) : '');
+      this._setState({
+        offers: offers,
+      });
+    }
+  };
+
+  static parseTripToState(trip) {
+    return {...trip};
+  }
+
+  static parseStateToTrip(state) {
+    return {...state};
+  }
 }
