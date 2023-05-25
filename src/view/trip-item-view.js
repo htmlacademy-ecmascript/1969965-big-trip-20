@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDate, findDifference, formatDifference } from '../utils.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
+import { getBlankEventFormData } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
@@ -74,14 +75,17 @@ export default class TripItemView extends AbstractView {
   #offers;
   #destinations;
   #handleEditClick;
+  #handleFavoriteClick;
 
-  constructor({trip, offers, destinations, onEditClick}) {
+  constructor({trip = getBlankEventFormData(), offers, destinations, onEditClick, onFavoriteClick}) {
     super();
     this.#trip = trip;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-icon').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
@@ -91,5 +95,10 @@ export default class TripItemView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

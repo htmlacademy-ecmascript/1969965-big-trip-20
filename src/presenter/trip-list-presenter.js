@@ -1,7 +1,7 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
+import { updateItem } from '../utils.js';
 import TripListView from '../view/trip-list-view.js';
-import TripItemView from '../view/trip-item-view.js';
-import EventFormView from '../view/event-form-view.js';
+import TripPresenter from './trip-presenter.js';
 
 export default class TripListPresenter {
   #tripListContainer;
@@ -10,7 +10,8 @@ export default class TripListPresenter {
   #offers;
   #destinations;
   #destinationsList;
-  #tripListComponent = new TripListView();
+  #tripListComponent;
+  #tripPresenters = new Map();
 
   constructor({tripListContainer, tripsModel}) {
     this.#tripListContainer = tripListContainer;
@@ -18,6 +19,7 @@ export default class TripListPresenter {
   }
 
   init() {
+    this.#tripListComponent = new TripListView();
     this.#trips = [...this.#tripsModel.trips];
     this.#offers = [...this.#tripsModel.offers];
     this.#destinations = [...this.#tripsModel.destinations];
@@ -25,38 +27,29 @@ export default class TripListPresenter {
 
     render(this.#tripListComponent, this.#tripListContainer);
 
-    for (let i = 1; i < this.#trips.length; i++) {
-      this.#renderTrips(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
+    for (let i = 0; i < this.#trips.length; i++) {
+      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
     }
   }
 
-  #renderTrips(trip, offers, destinations, destinationsList) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToTrip();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
+  };
 
-    const tripComponent = new TripItemView({trip, offers, destinations, onEditClick: () => {
-      replaceTripToForm();
-      document.addEventListener('keydown', escKeyDownHandler);
-    }});
-    const eventFormComponent = new EventFormView({trip, offers, destinations, destinationsList, onRollUpBtnClick: () => {
-      replaceFormToTrip();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }});
-
-    render(tripComponent, this.#tripListComponent.element);
-
-    function replaceTripToForm() {
-      replace(eventFormComponent, tripComponent);
-    }
-
-    function replaceFormToTrip() {
-      replace(tripComponent, eventFormComponent);
-    }
+  #renderTrip(trip, offers, destinations, destinationsList) {
+    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange, onModeChange: this.#handleModeChange});
+    tripPresenter.init(trip, offers, destinations, destinationsList);
+    this.#tripPresenters.set(trip.id, tripPresenter);
   }
+
+  #clearTripList() {
+    this.#tripPresenters.forEach((presenter) => presenter.destroy());
+    this.#tripPresenters.clear();
+  }
+
+  #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
+    this.#trips = updateItem(this.#trips, updatedTrip);
+    this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
+  };
 }
 
