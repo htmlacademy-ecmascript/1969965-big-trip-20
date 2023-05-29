@@ -169,6 +169,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
   }
 
   #rollUpBtnHandler = (evt) => {
@@ -201,6 +202,23 @@ export default class EventFormView extends AbstractStatefulView {
         offers: offers,
       });
     }
+  };
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    const destination = evt.target.value;
+    let destinationId = null;
+    this.#destinations.forEach((elem) => {
+      if (elem.name === destination) {
+        destinationId = elem.id;
+      }
+    });
+    this._setState({
+      destination: destinationId,
+    });
+    this.updateElement({
+      destination: destinationId,
+    });
   };
 
   static parseTripToState(trip) {
