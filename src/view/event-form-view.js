@@ -1,4 +1,3 @@
-// import AbstractView from '../framework/view/abstract-view';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
@@ -29,7 +28,6 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
   const currentDestination = destinations.filter((elem) => elem.id === destination);
   const {name} = currentDestination[0];
-  // const isSubmitDisabled = !isPriceExists;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -235,11 +233,6 @@ export default class EventFormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    // if (evt.target.value === '') {
-    //   this._setState({
-    //     isPriceExists: false,
-    //   });
-    // }
     this._setState({
       price: evt.target.value,
     });
