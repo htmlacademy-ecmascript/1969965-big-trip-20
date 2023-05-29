@@ -98,8 +98,8 @@ export default class TripPresenter {
     this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite}, this.#offers, this.#destinations, this.#destinationsList);
   };
 
-  #handleFormSubmit = () => {
-    this.#handleDataChange(this.#trip, this.#offers, this.#destinations, this.#destinationsList);
+  #handleFormSubmit = (trip) => {
+    this.#handleDataChange(trip, this.#offers, this.#destinations, this.#destinationsList);
     this.#replaceFormToTrip();
   };
 }

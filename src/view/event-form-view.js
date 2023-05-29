@@ -170,6 +170,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
   }
 
   #rollUpBtnHandler = (evt) => {
@@ -188,7 +189,7 @@ export default class EventFormView extends AbstractStatefulView {
         type: evt.target.value,
       });
       this._setState({
-        offers: [],
+        type: evt.target.value
       });
     }
   };
@@ -197,7 +198,7 @@ export default class EventFormView extends AbstractStatefulView {
     const checkElements = this.element.querySelectorAll('.event__offer-checkbox');
     if (evt.target.matches('.event__offer-checkbox')) {
       const offers = [];
-      checkElements.forEach((offer) => offer.checked ? offers.push(offer.id.slice(12)) : '');
+      checkElements.forEach((offer) => offer.checked ? offers.push(Number(offer.id.slice(12))) : '');
       this._setState({
         offers: offers,
       });
@@ -211,6 +212,10 @@ export default class EventFormView extends AbstractStatefulView {
     this.#destinations.forEach((elem) => {
       if (elem.name === destination) {
         destinationId = elem.id;
+        return;
+      }
+      if (destination === '') {
+        destinationId = 0;
       }
     });
     this._setState({
@@ -218,6 +223,13 @@ export default class EventFormView extends AbstractStatefulView {
     });
     this.updateElement({
       destination: destinationId,
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      price: evt.target.value,
     });
   };
 
