@@ -29,6 +29,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
   const currentDestination = destinations.filter((elem) => elem.id === destination);
   const {name} = currentDestination[0];
+  // const isSubmitDisabled = !isPriceExists;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -64,7 +65,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"}>Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -164,6 +165,12 @@ export default class EventFormView extends AbstractStatefulView {
     return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
   }
 
+  reset(trip) {
+    this.updateElement(
+      EventFormView.parseTripToState(trip),
+    );
+  }
+
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
@@ -228,6 +235,11 @@ export default class EventFormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
+    // if (evt.target.value === '') {
+    //   this._setState({
+    //     isPriceExists: false,
+    //   });
+    // }
     this._setState({
       price: evt.target.value,
     });
