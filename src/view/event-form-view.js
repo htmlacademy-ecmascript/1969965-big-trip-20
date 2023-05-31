@@ -62,10 +62,10 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+       <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" required>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit"}>Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -261,7 +261,7 @@ export default class EventFormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    this._setState({
+    this.updateElement({
       price: evt.target.value,
     });
   };
