@@ -3,7 +3,9 @@ import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
 import { formatDate } from '../utils.js';
 import { getBlankEventFormData } from '../constants.js';
+import flatpickr from 'flatpickr';
 
+import 'flatpickr/dist/flatpickr.min.css';
 function createEventTypeItemTemplate(types) {
   return `<div class="event__type-list">
             <fieldset class="event__type-group">
@@ -147,6 +149,8 @@ export default class EventFormView extends AbstractStatefulView {
   #offers;
   #handleFormSubmit;
   #handleFormClick;
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
   constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick}) {
     super();
@@ -159,6 +163,17 @@ export default class EventFormView extends AbstractStatefulView {
     this._restoreHandlers();
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
+  }
+
   get template() {
     return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
   }
@@ -169,6 +184,18 @@ export default class EventFormView extends AbstractStatefulView {
     );
   }
 
+  #startDateChangeHandler = ([userStartDate]) => {
+    this.updateElement({
+      timeStart: userStartDate
+    });
+  };
+
+  #endDateChangeHandler = ([userEndDate]) => {
+    this.updateElement({
+      timeEnd: userEndDate
+    });
+  };
+
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
@@ -176,6 +203,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
+    this.#setDatepicker();
   }
 
   #rollUpBtnHandler = (evt) => {
@@ -237,6 +265,33 @@ export default class EventFormView extends AbstractStatefulView {
       price: evt.target.value,
     });
   };
+
+  #setDatepicker() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        defaultDate: this._state.timeStart,
+        onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i',
+        altInput: true,
+        altFormat: 'F j, Y',
+      },
+    );
+
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        defaultDate: this._state.timeEnd,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i',
+        altInput: true,
+        altFormat: 'F j, Y',
+        minDate: this.element.querySelector('#event-start-time-1').value
+      },
+    );
+  }
 
   static parseTripToState(trip) {
     return {...trip};
