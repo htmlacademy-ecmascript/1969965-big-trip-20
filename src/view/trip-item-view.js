@@ -12,18 +12,6 @@ function createTripOffersTemplate(offers) {
           </ul>`;
 }
 
-// function getOffers(tripOffers, offers) {
-//   const arr = [];
-//   tripOffers.forEach((item) => {
-//     offers.forEach((elem) => {
-//       if (item.id === elem) {
-//         arr.push(item);
-//       }
-//     });
-//   });
-//   return arr;
-// }
-
 function createTripItemTemplate(trip, off, destinations) {
   const {type, price, offers, destination, timeStart, timeEnd, isFavorite} = trip;
   const currentDestination = getCurrentDestination(destination, destinations);

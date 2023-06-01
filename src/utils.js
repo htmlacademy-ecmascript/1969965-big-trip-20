@@ -76,4 +76,8 @@ function getOffers(tripOffers, offers) {
   return arr;
 }
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination, isItemChecked, getCurrentOffers, getOffers };
+function isDestinationCorrect (validDestinations, userDestination) {
+  return validDestinations.some((dest) => userDestination === dest.name);
+}
+
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination, isItemChecked, getCurrentOffers, getOffers, isDestinationCorrect };

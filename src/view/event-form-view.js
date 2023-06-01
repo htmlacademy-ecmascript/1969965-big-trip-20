@@ -1,15 +1,15 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate, getCurrentDestination, isItemChecked, getCurrentOffers } from '../utils.js';
+import { formatDate, getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils.js';
 import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
-  const {destination, timeStart, timeEnd, type, price} = trip;
+  const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists);
   const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
@@ -27,12 +27,14 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists) {
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
 
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
+  const isSubmitBtnDisabled = !isNameExists || !isPriceExists;
+  console.log(isSubmitBtnDisabled);
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -48,7 +50,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1" required>
         ${destinationsListTemplate}
       </div>
 
@@ -68,7 +70,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
        <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${price}" required>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -230,20 +232,22 @@ export default class EventFormView extends AbstractStatefulView {
     const destination = evt.target.value;
     let destinationId = '';
 
-    if (destination !== '') {
+    if (isDestinationCorrect(this.#destinations, destination)) {
       const destinationList = this.#destinations.filter((elem) => destination === elem.name)[0];
       destinationId = destinationList.id;
     }
 
     this.updateElement({
       destination: destinationId,
+      isNameExists: destinationId !== ''
     });
   };
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    this._setState({
+    this.updateElement({
       price: evt.target.value,
+      isPriceExists: evt.target.value !== ''
     });
   };
 
@@ -271,10 +275,13 @@ export default class EventFormView extends AbstractStatefulView {
   }
 
   static parseTripToState(trip) {
-    return {...trip};
+    return {...trip, isNameExists: trip.destination !== '', isPriceExists: trip.price !== ''};
   }
 
   static parseStateToTrip(state) {
-    return {...state};
+    const trip = {...state};
+    delete trip.isNameExists;
+    delete trip.isPriceExists;
+    return trip;
   }
 }
