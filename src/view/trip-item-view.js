@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDate, findDifference, formatDifference, getCurrentDestination } from '../utils.js';
+import { formatDate, findDifference, formatDifference, getCurrentDestination, getOffers } from '../utils.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
@@ -12,25 +12,24 @@ function createTripOffersTemplate(offers) {
           </ul>`;
 }
 
+// function getOffers(tripOffers, offers) {
+//   const arr = [];
+//   tripOffers.forEach((item) => {
+//     offers.forEach((elem) => {
+//       if (item.id === elem) {
+//         arr.push(item);
+//       }
+//     });
+//   });
+//   return arr;
+// }
+
 function createTripItemTemplate(trip, off, destinations) {
   const {type, price, offers, destination, timeStart, timeEnd, isFavorite} = trip;
   const currentDestination = getCurrentDestination(destination, destinations);
-  const cityName = currentDestination.name;
+  const {name} = currentDestination;
   const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
-
-  function getOffers() {
-    const arr = [];
-    tripOffers.forEach((item) => {
-      offers.forEach((elem) => {
-        if (item.id === elem) {
-          arr.push(item);
-        }
-      });
-    });
-    return arr;
-  }
-
-  const offersTemplate = createTripOffersTemplate(getOffers());
+  const offersTemplate = createTripOffersTemplate(getOffers(tripOffers, offers));
 
   const favoriteClassName = isFavorite
     ? FavoriteBtnStateClasses.ACTIVE
@@ -42,7 +41,7 @@ function createTripItemTemplate(trip, off, destinations) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${cityName}</h3>
+    <h3 class="event__title">${type} ${name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormats.HOUR_MINUTES)}</time>

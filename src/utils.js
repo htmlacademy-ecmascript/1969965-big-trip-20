@@ -64,4 +64,16 @@ function getCurrentOffers (offers, trip) {
   return offers.filter((elem) => elem.type === trip.type)[0];
 }
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination, isItemChecked, getCurrentOffers };
+function getOffers(tripOffers, offers) {
+  const arr = [];
+  tripOffers.forEach((item) => {
+    offers.forEach((elem) => {
+      if (item.id === elem) {
+        arr.push(item);
+      }
+    });
+  });
+  return arr;
+}
+
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination, isItemChecked, getCurrentOffers, getOffers };
