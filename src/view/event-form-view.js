@@ -1,35 +1,38 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate } from '../utils.js';
+import { formatDate, getCurrentDestination } from '../utils.js';
 import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
-function createEventTypeItemTemplate(types) {
-  return `<div class="event__type-list">
-            <fieldset class="event__type-group">
-            <legend class="visually-hidden">Event type</legend>
-            ${types.map((type) =>
-    `<div class="event__type-item">
-                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-                <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${turnFirstCharToUppercase(type)}</label>
-              </div>`).join('')}
-            </fieldset>
-          </div>`;
-}
 
-function createDestinationsListTemplate(destinationsList) {
-  return `<datalist id="destination-list-1">
-  ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
-</datalist>`;
+function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
+  const {destination, timeStart, timeEnd, type, price} = trip;
+
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price);
+  const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
+  const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
+
+  return `<li class="trip-events__item">
+            <form class="event event--edit" action="#" method="post">
+              ${headerTemplate}
+              <section class="event__details">
+                <section class="event__section  event__section--offers">
+                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                  ${offersTemplate}
+                </section>
+                ${destination !== '' ? descriptionTemplate : ''}
+              </section>
+            </form>
+         </li>`;
 }
 
 function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price) {
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
-  const currentDestination = destinations.filter((elem) => elem.id === destination);
-  const {name} = currentDestination[0];
+
+  const currentDestination = getCurrentDestination(destination, destinations);
+  const {name} = currentDestination;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -73,23 +76,32 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
     </header>`;
 }
 
+function createEventTypeItemTemplate(types) {
+  return `<div class="event__type-list">
+            <fieldset class="event__type-group">
+            <legend class="visually-hidden">Event type</legend>
+            ${types.map((type) =>
+    `<div class="event__type-item">
+                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+                <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${turnFirstCharToUppercase(type)}</label>
+              </div>`).join('')}
+            </fieldset>
+          </div>`;
+}
+
+function createDestinationsListTemplate(destinationsList) {
+  return `<datalist id="destination-list-1">
+  ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
+</datalist>`;
+}
+
 function createEventFormOfferItemTemplate(offers, trip) {
   const currentOffers = offers.filter((elem) => elem.type === trip.type);
   const chosenOffers = trip.offers;
 
-  function isItemChecked (id) {
-    let result;
-    chosenOffers.forEach((offer) => {
-      if (offer === id) {
-        result = 'checked = \'checked\'';
-      }
-    });
-    return result;
-  }
-
   return `<div class="event__available-offers">
     ${currentOffers[0].offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id)}>
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)}>
   <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -100,8 +112,8 @@ function createEventFormOfferItemTemplate(offers, trip) {
 }
 
 function createEventFormDescriptionTemplate(destinations, destination) {
-  const currentDestination = destinations.filter((elem) => elem.id === destination);
-  const description = currentDestination[0].description;
+  const currentDestination = getCurrentDestination(destination, destinations);
+  const {description} = currentDestination;
   const descriptionImagesTemplate = createEventFormDestinationPictureTemplate(destination, destinations);
 
   return `<section class="event__section  event__section--destination">
@@ -112,8 +124,8 @@ function createEventFormDescriptionTemplate(destinations, destination) {
 }
 
 function createEventFormDestinationPictureTemplate(destination, destinations) {
-  const currentDestination = destinations.filter((elem) => elem.id === destination);
-  const images = currentDestination[0].images;
+  const currentDestination = getCurrentDestination(destination, destinations);
+  const {images} = currentDestination;
 
   return `<div class="event__photos-container">
             <div class="event__photos-tape">
@@ -122,26 +134,16 @@ function createEventFormDestinationPictureTemplate(destination, destinations) {
           </div>`;
 }
 
-function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
-  const {destination, timeStart, timeEnd, type, price} = trip;
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price);
-  const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
-  const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
-
-  return `<li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
-    ${headerTemplate}
-
-    <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${offersTemplate}
-      </section>
-        ${descriptionTemplate}
-    </section>
-  </form>
-</li>`;
+function isItemChecked (id, offers) {
+  let result;
+  offers.forEach((offer) => {
+    if (offer === id) {
+      result = 'checked = \'checked\'';
+    }
+  });
+  return result;
 }
+
 
 export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
@@ -221,9 +223,6 @@ export default class EventFormView extends AbstractStatefulView {
       this.updateElement({
         type: evt.target.value,
       });
-      this._setState({
-        type: evt.target.value
-      });
     }
   };
 
@@ -241,19 +240,13 @@ export default class EventFormView extends AbstractStatefulView {
   #destinationInputHandler = (evt) => {
     evt.preventDefault();
     const destination = evt.target.value;
-    let destinationId = null;
-    this.#destinations.forEach((elem) => {
-      if (elem.name === destination) {
-        destinationId = elem.id;
-        return;
-      }
-      if (destination === '') {
-        destinationId = 0;
-      }
-    });
-    this._setState({
-      destination: destinationId,
-    });
+    let destinationId = '';
+
+    if (destination !== '') {
+      const destinationList = this.#destinations.filter((elem) => destination === elem.name);
+      destinationId = destinationList[0].id;
+    }
+
     this.updateElement({
       destination: destinationId,
     });
@@ -261,7 +254,7 @@ export default class EventFormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({
+    this._setState({
       price: evt.target.value,
     });
   };
