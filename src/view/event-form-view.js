@@ -1,7 +1,8 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
 import { formatDate } from '../utils.js';
+import { getBlankEventFormData } from '../constants.js';
 
 function createEventTypeItemTemplate(types) {
   return `<div class="event__type-list">
@@ -62,7 +63,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"}>Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -72,16 +73,28 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
 
 function createEventFormOfferItemTemplate(offers, trip) {
   const currentOffers = offers.filter((elem) => elem.type === trip.type);
+  const chosenOffers = trip.offers;
+
+  function isItemChecked (id) {
+    let result;
+    chosenOffers.forEach((offer) => {
+      if (offer === id) {
+        result = 'checked = \'checked\'';
+      }
+    });
+    return result;
+  }
 
   return `<div class="event__available-offers">
     ${currentOffers[0].offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" checked>
-  <label class="event__offer-label" for="event-offer-${id}-1">
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id)}>
+  <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
   </label>
 </div>`).join('')} </div>`;
+
 }
 
 function createEventFormDescriptionTemplate(destinations, destination) {
@@ -128,28 +141,41 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
 </li>`;
 }
 
-export default class EventFormView extends AbstractView {
+export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
-  #trip;
   #destinations;
   #offers;
   #handleFormSubmit;
   #handleFormClick;
 
-  constructor({destinationsList, trip, destinations, offers, onFormSubmit, onRollUpBtnClick}) {
+  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick}) {
     super();
     this.#destinationsList = destinationsList;
-    this.#trip = trip;
+    this._setState(EventFormView.parseTripToState(trip));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onRollUpBtnClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
-    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEventFormTemplate(tripTypes, this.#destinationsList, this.#trip, this.#destinations, this.#offers);
+    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
+  }
+
+  reset(trip) {
+    this.updateElement(
+      EventFormView.parseTripToState(trip),
+    );
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
+    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
   }
 
   #rollUpBtnHandler = (evt) => {
@@ -159,6 +185,64 @@ export default class EventFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#trip, this.#offers, this.#destinations, this.#destinationsList);
+    this.#handleFormSubmit(EventFormView.parseStateToTrip(this._state), this.#offers, this.#destinations, this.#destinationsList);
   };
+
+  #eventTypeListHandler = (evt) => {
+    if (evt.target.matches('.event__type-input')){
+      this.updateElement({
+        type: evt.target.value,
+      });
+      this._setState({
+        type: evt.target.value
+      });
+    }
+  };
+
+  #offerCheckHandler = (evt) => {
+    const checkElements = this.element.querySelectorAll('.event__offer-checkbox');
+    if (evt.target.matches('.event__offer-checkbox')) {
+      const offers = [];
+      checkElements.forEach((offer) => offer.checked ? offers.push(Number(offer.id.slice(12))) : '');
+      this._setState({
+        offers: offers,
+      });
+    }
+  };
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    const destination = evt.target.value;
+    let destinationId = null;
+    this.#destinations.forEach((elem) => {
+      if (elem.name === destination) {
+        destinationId = elem.id;
+        return;
+      }
+      if (destination === '') {
+        destinationId = 0;
+      }
+    });
+    this._setState({
+      destination: destinationId,
+    });
+    this.updateElement({
+      destination: destinationId,
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      price: evt.target.value,
+    });
+  };
+
+  static parseTripToState(trip) {
+    return {...trip};
+  }
+
+  static parseStateToTrip(state) {
+    return {...state};
+  }
 }

@@ -61,6 +61,7 @@ export default class TripPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#eventFormComponent.reset(this.#trip);
       this.#replaceFormToTrip();
     }
   }
@@ -82,6 +83,7 @@ export default class TripPresenter {
   };
 
   #handleRollUpBtnClick = () => {
+    this.#eventFormComponent.reset(this.#trip);
     this.#replaceFormToTrip();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -89,6 +91,7 @@ export default class TripPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#eventFormComponent.reset(this.#trip);
       this.#replaceFormToTrip();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
@@ -98,8 +101,8 @@ export default class TripPresenter {
     this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite}, this.#offers, this.#destinations, this.#destinationsList);
   };
 
-  #handleFormSubmit = () => {
-    this.#handleDataChange(this.#trip, this.#offers, this.#destinations, this.#destinationsList);
+  #handleFormSubmit = (trip) => {
+    this.#handleDataChange(trip, this.#offers, this.#destinations, this.#destinationsList);
     this.#replaceFormToTrip();
   };
 }

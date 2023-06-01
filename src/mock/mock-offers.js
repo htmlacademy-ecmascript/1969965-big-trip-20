@@ -113,6 +113,56 @@ const mockOffers = [
         id: 17
       }
     ]
+  },
+  {
+    type: 'train',
+    offers: [
+      {
+        title: 'Hot Soviet Tea',
+        price: 15,
+        id: 18
+      },
+      {
+        title: 'Change linen',
+        price: 30,
+        id: 19
+      }
+    ]
+  },
+  {
+    type: 'ship',
+    offers: [
+      {
+        title: 'Three meals a day',
+        price: 40,
+        id: 20
+      },
+      {
+        title: 'Pool',
+        price: 30,
+        id: 21
+      },
+      {
+        title: 'Steer the ship with captain',
+        price: 100,
+        id: 22
+      }
+    ]
+  },
+  {
+    type: 'restaurant',
+    offers: [
+      {
+        title: 'A dish from the chef',
+        price: 30,
+        id: 23
+      },
+      {
+        title: 'Rug',
+        price: 5,
+        id: 24
+      },
+    ]
   }
 ];
 
