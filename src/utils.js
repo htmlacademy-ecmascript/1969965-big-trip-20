@@ -50,4 +50,18 @@ function getCurrentDestination (destination, destinations) {
   return currentDestinationList[0];
 }
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination };
+function isItemChecked (id, offers) {
+  let result;
+  offers.forEach((offer) => {
+    if (offer === id) {
+      result = 'checked = \'checked\'';
+    }
+  });
+  return result;
+}
+
+function getCurrentOffers (offers, trip) {
+  return offers.filter((elem) => elem.type === trip.type)[0];
+}
+
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination, isItemChecked, getCurrentOffers };

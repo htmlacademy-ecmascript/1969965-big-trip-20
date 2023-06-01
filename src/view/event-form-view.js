@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { turnFirstCharToUppercase } from '../utils.js';
 import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate, getCurrentDestination } from '../utils.js';
+import { formatDate, getCurrentDestination, isItemChecked, getCurrentOffers } from '../utils.js';
 import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -96,11 +96,11 @@ function createDestinationsListTemplate(destinationsList) {
 }
 
 function createEventFormOfferItemTemplate(offers, trip) {
-  const currentOffers = offers.filter((elem) => elem.type === trip.type);
+  const currentOffers = getCurrentOffers(offers, trip);
   const chosenOffers = trip.offers;
 
   return `<div class="event__available-offers">
-    ${currentOffers[0].offers.map(({title, price, id}) => `<div class="event__offer-selector">
+    ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
   <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)}>
   <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
@@ -108,7 +108,6 @@ function createEventFormOfferItemTemplate(offers, trip) {
     <span class="event__offer-price">${price}</span>
   </label>
 </div>`).join('')} </div>`;
-
 }
 
 function createEventFormDescriptionTemplate(destinations, destination) {
@@ -134,25 +133,14 @@ function createEventFormDestinationPictureTemplate(destination, destinations) {
           </div>`;
 }
 
-function isItemChecked (id, offers) {
-  let result;
-  offers.forEach((offer) => {
-    if (offer === id) {
-      result = 'checked = \'checked\'';
-    }
-  });
-  return result;
-}
-
-
 export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
   #destinations;
   #offers;
   #handleFormSubmit;
   #handleFormClick;
-  #datepickerStart = null;
-  #datepickerEnd = null;
+  #datepickerStart;
+  #datepickerEnd;
 
   constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick}) {
     super();
@@ -243,8 +231,8 @@ export default class EventFormView extends AbstractStatefulView {
     let destinationId = '';
 
     if (destination !== '') {
-      const destinationList = this.#destinations.filter((elem) => destination === elem.name);
-      destinationId = destinationList[0].id;
+      const destinationList = this.#destinations.filter((elem) => destination === elem.name)[0];
+      destinationId = destinationList.id;
     }
 
     this.updateElement({
