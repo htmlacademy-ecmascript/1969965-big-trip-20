@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDate, findDifference, formatDifference } from '../utils.js';
+import { formatDate, findDifference, formatDifference, getCurrentDestination } from '../utils.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
 
 function createTripOffersTemplate(offers) {
@@ -14,8 +14,8 @@ function createTripOffersTemplate(offers) {
 
 function createTripItemTemplate(trip, off, destinations) {
   const {type, price, offers, destination, timeStart, timeEnd, isFavorite} = trip;
-  const currentDestination = destinations.filter((elem) => elem.id === destination);
-  const cityName = currentDestination[0].name;
+  const currentDestination = getCurrentDestination(destination, destinations);
+  const cityName = currentDestination.name;
   const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
 
   function getOffers() {
