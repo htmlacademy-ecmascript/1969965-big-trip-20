@@ -62,7 +62,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" required>
+       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${price}" required>
      </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -273,9 +273,7 @@ export default class EventFormView extends AbstractStatefulView {
         defaultDate: this._state.timeStart,
         onChange: this.#startDateChangeHandler,
         enableTime: true,
-        dateFormat: 'Y-m-d H:i',
-        altInput: true,
-        altFormat: 'F j, Y',
+        dateFormat: 'd-m-Y H:i',
       },
     );
 
@@ -285,9 +283,7 @@ export default class EventFormView extends AbstractStatefulView {
         defaultDate: this._state.timeEnd,
         onChange: this.#endDateChangeHandler,
         enableTime: true,
-        dateFormat: 'Y-m-d H:i',
-        altInput: true,
-        altFormat: 'F j, Y',
+        dateFormat: 'd-m-Y H:i',
         minDate: this.element.querySelector('#event-start-time-1').value
       },
     );
