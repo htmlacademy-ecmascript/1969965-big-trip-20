@@ -42,4 +42,12 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem };
+function getCurrentDestination (destination, destinations) {
+  const currentDestinationList = destinations.filter((elem) => elem.id === destination);
+  if (currentDestinationList.length === 0) {
+    return {id: '', name: '', description: '', images: []};
+  }
+  return currentDestinationList[0];
+}
+
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem, getCurrentDestination };
