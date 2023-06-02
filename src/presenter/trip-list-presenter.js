@@ -2,7 +2,7 @@ import { render } from '../framework/render.js';
 import { updateItem } from '../utils.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
-
+import NoTripView from '../view/no-trip-view.js';
 export default class TripListPresenter {
   #tripListContainer;
   #tripsModel;
@@ -11,6 +11,7 @@ export default class TripListPresenter {
   #destinations;
   #destinationsList;
   #tripListComponent;
+  #noTripComponent;
   #tripPresenters = new Map();
 
   constructor({tripListContainer, tripsModel}) {
@@ -20,6 +21,7 @@ export default class TripListPresenter {
 
   init() {
     this.#tripListComponent = new TripListView();
+    this.#noTripComponent = new NoTripView();
     this.#trips = [...this.#tripsModel.trips];
     this.#offers = [...this.#tripsModel.offers];
     this.#destinations = [...this.#tripsModel.destinations];
@@ -33,6 +35,12 @@ export default class TripListPresenter {
   };
 
   #renderList() {
+
+    if (this.#trips.length < 1) {
+      render(this.#noTripComponent, this.#tripListContainer);
+      return;
+    }
+
     render(this.#tripListComponent, this.#tripListContainer);
 
     for (let i = 0; i < this.#trips.length; i++) {

@@ -16,6 +16,13 @@ export default class TripInfoPresenter {
     this.#trips = [...this.#tripsModel.trips];
     this.#destinations = [...this.#tripsModel.destinations];
 
+    this.#renderTripInfo();
+  }
+
+  #renderTripInfo() {
+    if (this.#trips.length < 1) {
+      return;
+    }
     render(new TripInfoView({trips: this.#trips, destinations: this.#destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 }
