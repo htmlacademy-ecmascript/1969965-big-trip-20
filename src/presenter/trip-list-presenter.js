@@ -21,7 +21,6 @@ export default class TripListPresenter {
 
   init() {
     this.#tripListComponent = new TripListView();
-    this.#noTripComponent = new NoTripView();
     this.#trips = [...this.#tripsModel.trips];
     this.#offers = [...this.#tripsModel.offers];
     this.#destinations = [...this.#tripsModel.destinations];
@@ -35,9 +34,8 @@ export default class TripListPresenter {
   };
 
   #renderList() {
-
     if (this.#trips.length < 1) {
-      render(this.#noTripComponent, this.#tripListContainer);
+      render(new NoTripView({filterType: 'Everything'}), this.#tripListContainer);
       return;
     }
 
