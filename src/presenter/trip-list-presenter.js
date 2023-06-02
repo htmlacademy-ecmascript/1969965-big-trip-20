@@ -25,16 +25,20 @@ export default class TripListPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
+    this.#renderList();
+  }
+
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderList() {
     render(this.#tripListComponent, this.#tripListContainer);
 
     for (let i = 0; i < this.#trips.length; i++) {
       this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
     }
   }
-
-  #handleModeChange = () => {
-    this.#tripPresenters.forEach((presenter) => presenter.resetView());
-  };
 
   #renderTrip(trip, offers, destinations, destinationsList) {
     const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange, onModeChange: this.#handleModeChange});

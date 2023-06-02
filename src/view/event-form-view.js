@@ -34,7 +34,6 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
   const isSubmitBtnDisabled = !isNameExists || !isPriceExists;
-  console.log(isSubmitBtnDisabled);
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
