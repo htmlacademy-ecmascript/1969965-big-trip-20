@@ -1,5 +1,5 @@
 import { render } from '../framework/render.js';
-import { updateItem } from '../util/trip.js';
+import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';

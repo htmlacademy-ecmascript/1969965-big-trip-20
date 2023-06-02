@@ -10,7 +10,7 @@ const DateFormats = {
   DAY: 'D'
 };
 
-const TRIP_COUNT = 0;
+const TRIP_COUNT = 4;
 
 const FavoriteBtnStateClasses = {
   ACTIVE: 'event__favorite-btn event__favorite-btn--active',
@@ -34,4 +34,11 @@ function getBlankEventFormData() {
   return BLANK_EVENT_FORM_DATA;
 }
 
-export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData };
+const FilterTypes = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  PRESENT: 'present',
+  FUTURE: 'future',
+};
+
+export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData, FilterTypes };

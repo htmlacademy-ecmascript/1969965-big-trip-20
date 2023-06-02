@@ -1,10 +1,10 @@
 import AbstractView from '../framework/view/abstract-view';
 
-const filterMessages = {
-  'Everything': 'Click New Event to create your first point',
-  'Past': 'There are no past events now',
-  'Present': 'There are no present events now',
-  'Future': 'There are no future events now',
+const FilterMessages = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now',
 };
 
 function createNoTripTemplate(filterType) {
@@ -13,7 +13,7 @@ function createNoTripTemplate(filterType) {
 }
 
 function getFilterMessage(filterType) {
-  return filterMessages[filterType];
+  return FilterMessages[filterType];
 }
 
 export default class NoTripView extends AbstractView {

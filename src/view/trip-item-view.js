@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDate, findDifference, formatDifference } from '../util/common.js';
+import { formatDate, findDifference, formatDifference } from '../utils/common.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
-import { getCurrentDestination, getOffers } from '../util/trip.js';
+import { getCurrentDestination, getOffers } from '../utils/trip.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">

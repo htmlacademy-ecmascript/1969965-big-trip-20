@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 import { DateFormats } from '../constants.js';
-import { formatDate } from '../util/common.js';
+import { formatDate } from '../utils/common.js';
 
 function getTotalPrice(trips) {
   const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
