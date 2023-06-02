@@ -1,10 +1,11 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { turnFirstCharToUppercase } from '../utils.js';
+import { turnFirstCharToUppercase } from '../util/common.js';
 import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate, getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils.js';
+import { formatDate } from '../util/common';
 import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../util/trip.js';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;

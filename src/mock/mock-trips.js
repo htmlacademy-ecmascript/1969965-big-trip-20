@@ -1,4 +1,4 @@
-import { getRandomArrayElement, getRandomNumber } from '../utils.js';
+import { getRandomArrayElement, getRandomNumber } from '../util/common.js';
 
 const mockTrips = [
   {
