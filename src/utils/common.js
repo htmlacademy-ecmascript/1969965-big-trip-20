@@ -20,10 +20,16 @@ function formatDifference(time) {
   if (time < 60) {
     return `${time}M`;
   }
-  if (time >= 60) {
+  if (time >= 60 && time <= 1440) {
     const hours = Math.floor(time / 60);
     const minutes = time % 60;
     return `${hours}H ${minutes}M`;
+  }
+  if (time > 1440) {
+    const days = Math.floor(time / 1440);
+    const hours = Math.floor((time % 1440) / 60);
+    const minutes = time % 60;
+    return `${days}D ${hours}H ${minutes}M`;
   }
 }
 
@@ -32,8 +38,4 @@ function turnFirstCharToUppercase(string) {
   return result;
 }
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase, updateItem };
+export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase };

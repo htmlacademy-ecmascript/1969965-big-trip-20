@@ -1,8 +1,8 @@
 import { render } from '../framework/render.js';
-import { updateItem } from '../utils.js';
+import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
-
+import NoTripView from '../view/no-trip-view.js';
 export default class TripListPresenter {
   #tripListContainer;
   #tripsModel;
@@ -11,6 +11,7 @@ export default class TripListPresenter {
   #destinations;
   #destinationsList;
   #tripListComponent;
+  #noTripComponent;
   #tripPresenters = new Map();
 
   constructor({tripListContainer, tripsModel}) {
@@ -25,16 +26,25 @@ export default class TripListPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
+    this.#renderList();
+  }
+
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderList() {
+    if (this.#trips.length < 1) {
+      render(new NoTripView({filterType: 'Everything'}), this.#tripListContainer);
+      return;
+    }
+
     render(this.#tripListComponent, this.#tripListContainer);
 
     for (let i = 0; i < this.#trips.length; i++) {
       this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
     }
   }
-
-  #handleModeChange = () => {
-    this.#tripPresenters.forEach((presenter) => presenter.resetView());
-  };
 
   #renderTrip(trip, offers, destinations, destinationsList) {
     const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleTripChange, onModeChange: this.#handleModeChange});

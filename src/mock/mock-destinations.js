@@ -1,4 +1,4 @@
-import { getRandomNumber } from '../utils.js';
+import { getRandomNumber } from '../utils/common.js';
 import { RANDOM_NUM_RANGE } from '../constants.js';
 
 const mockDestinations = [

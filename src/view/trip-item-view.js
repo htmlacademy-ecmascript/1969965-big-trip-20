@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDate, findDifference, formatDifference } from '../utils.js';
+import { formatDate, findDifference, formatDifference } from '../utils/common.js';
 import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
+import { getCurrentDestination, getOffers } from '../utils/trip.js';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
@@ -14,23 +15,10 @@ function createTripOffersTemplate(offers) {
 
 function createTripItemTemplate(trip, off, destinations) {
   const {type, price, offers, destination, timeStart, timeEnd, isFavorite} = trip;
-  const currentDestination = destinations.filter((elem) => elem.id === destination);
-  const cityName = currentDestination[0].name;
+  const currentDestination = getCurrentDestination(destination, destinations);
+  const {name} = currentDestination;
   const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
-
-  function getOffers() {
-    const arr = [];
-    tripOffers.forEach((item) => {
-      offers.forEach((elem) => {
-        if (item.id === elem) {
-          arr.push(item);
-        }
-      });
-    });
-    return arr;
-  }
-
-  const offersTemplate = createTripOffersTemplate(getOffers());
+  const offersTemplate = createTripOffersTemplate(getOffers(tripOffers, offers));
 
   const favoriteClassName = isFavorite
     ? FavoriteBtnStateClasses.ACTIVE
@@ -42,7 +30,7 @@ function createTripItemTemplate(trip, off, destinations) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${cityName}</h3>
+    <h3 class="event__title">${type} ${name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormats.HOUR_MINUTES)}</time>

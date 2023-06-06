@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
-import { formatDate } from '../utils.js';
 import { DateFormats } from '../constants.js';
+import { formatDate } from '../utils/common.js';
 
 function getTotalPrice(trips) {
   const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
@@ -42,14 +42,14 @@ function createDestinationsTrackTemplate(trips, destinations) {
 
   if (destinationsTrack.length <= 3) {
     const array = destinationsTrack.slice(0, destinationsTrack.length - 1);
-    return `<h1 class="trip-info__title"> 
+    return `<h1 class="trip-info__title">
     ${array.map((elem) => `${elem} &mdash; `).join('')}${destinationsTrack[destinationsTrack.length - 1]}</h1>`;
   }
 
   if (destinationsTrack.length > 3) {
     const array2 = destinationsTrack.slice(0, 1);
 
-    return `<h1 class="trip-info__title"> 
+    return `<h1 class="trip-info__title">
     ${array2.map((elem) => `${elem} &mdash; `).join('')} &#8230; &mdash; ${destinationsTrack[destinationsTrack.length - 1]}</h1>`;
   }
 }
@@ -61,7 +61,7 @@ function createTripInfoTemplate(trips, destinations) {
 
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    ${destinationsTrack}  
+    ${destinationsTrack}
       <p class="trip-info__dates">${startDate}&nbsp;&mdash;&nbsp;${endDate}</p>
   </div>
 

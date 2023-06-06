@@ -10,7 +10,7 @@ const mainSectionElement = document.querySelector('.trip-events');
 
 const tripsModel = new TripsModel();
 
-const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement});
+const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel});
 const sortingPresenter = new SortingPanelPresenter({sortingContainer: mainSectionElement});
 const tripListPresenter = new TripListPresenter({
   tripListContainer: mainSectionElement,
@@ -21,3 +21,4 @@ tripInfoPresenter.init();
 filtersPresenter.init();
 sortingPresenter.init();
 tripListPresenter.init();
+
