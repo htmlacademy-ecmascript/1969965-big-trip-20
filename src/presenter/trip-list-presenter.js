@@ -1,8 +1,9 @@
-import { render } from '../framework/render.js';
+import { RenderPosition, render } from '../framework/render.js';
 import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
+import SortingContainerView from '../view/sorting-container-view.js';
 export default class TripListPresenter {
   #tripListContainer;
   #tripsModel;
@@ -11,7 +12,8 @@ export default class TripListPresenter {
   #destinations;
   #destinationsList;
   #tripListComponent;
-  #noTripComponent;
+  #sortingComponent = new SortingContainerView();
+  #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
   #tripPresenters = new Map();
 
   constructor({tripListContainer, tripsModel}) {
@@ -29,21 +31,12 @@ export default class TripListPresenter {
     this.#renderList();
   }
 
-  #handleModeChange = () => {
-    this.#tripPresenters.forEach((presenter) => presenter.resetView());
-  };
+  #renderSort() {
+    render(this.#sortingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
+  }
 
-  #renderList() {
-    if (this.#trips.length < 1) {
-      render(new NoTripView({filterType: 'Everything'}), this.#tripListContainer);
-      return;
-    }
-
-    render(this.#tripListComponent, this.#tripListContainer);
-
-    for (let i = 0; i < this.#trips.length; i++) {
-      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
-    }
+  #renderNoTrips() {
+    render(this.#noTripComponent, this.#tripListContainer);
   }
 
   #renderTrip(trip, offers, destinations, destinationsList) {
@@ -52,14 +45,32 @@ export default class TripListPresenter {
     this.#tripPresenters.set(trip.id, tripPresenter);
   }
 
-  #clearTripList() {
-    this.#tripPresenters.forEach((presenter) => presenter.destroy());
-    this.#tripPresenters.clear();
-  }
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
     this.#trips = updateItem(this.#trips, updatedTrip);
     this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
   };
+
+  #clearTripList() {
+    this.#tripPresenters.forEach((presenter) => presenter.destroy());
+    this.#tripPresenters.clear();
+  }
+
+  #renderList() {
+    if (this.#trips.length < 1) {
+      this.#renderNoTrips();
+      return;
+    }
+
+    this.#renderSort();
+    render(this.#tripListComponent, this.#tripListContainer);
+
+    for (let i = 0; i < this.#trips.length; i++) {
+      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
+    }
+  }
 }
 
