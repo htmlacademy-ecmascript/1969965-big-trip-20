@@ -155,7 +155,7 @@ const mockTrips = [
     id: 16,
     destination: getRandomNumber(6),
     type: 'taxi',
-    price: 300,
+    price: 400,
     timeStart: '2019-07-12T22:55:56.845Z',
     timeEnd: '2019-07-17T11:22:13.375Z',
     isFavorite: true,
