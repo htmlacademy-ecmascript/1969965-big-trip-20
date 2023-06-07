@@ -3,7 +3,7 @@ import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
-import SortingContainerView from '../view/sorting-container-view.js';
+import SortingView from '../view/sorting-view.js';
 export default class TripListPresenter {
   #tripListContainer;
   #tripsModel;
@@ -12,7 +12,7 @@ export default class TripListPresenter {
   #destinations;
   #destinationsList;
   #tripListComponent;
-  #sortingComponent = new SortingContainerView();
+  #sortingComponent;
   #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
   #tripPresenters = new Map();
 
@@ -28,10 +28,16 @@ export default class TripListPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    this.#renderList();
+    this.#renderBoard();
   }
 
+  #handleSortTypeChange = (sortType) => {
+  };
+
   #renderSort() {
+    this.#sortingComponent = new SortingView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
   }
 
@@ -60,17 +66,21 @@ export default class TripListPresenter {
   }
 
   #renderList() {
+    for (let i = 0; i < this.#trips.length; i++) {
+      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
+    }
+  }
+
+  #renderBoard() {
+    render(this.#tripListComponent, this.#tripListContainer);
+
     if (this.#trips.length < 1) {
       this.#renderNoTrips();
       return;
     }
 
     this.#renderSort();
-    render(this.#tripListComponent, this.#tripListContainer);
-
-    for (let i = 0; i < this.#trips.length; i++) {
-      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
-    }
+    this.#renderList();
   }
 }
 
