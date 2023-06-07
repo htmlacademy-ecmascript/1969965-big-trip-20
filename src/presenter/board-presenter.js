@@ -4,6 +4,9 @@ import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
+import { sortTrips } from '../utils/sorting.js';
+import { SortTypes } from '../constants.js';
+
 export default class TripListPresenter {
   #tripListContainer;
   #tripsModel;
@@ -15,6 +18,8 @@ export default class TripListPresenter {
   #sortingComponent;
   #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
   #tripPresenters = new Map();
+  #currentSortType = SortTypes.DAY;
+  #sourcedBoardTrips = [];
 
   constructor({tripListContainer, tripsModel}) {
     this.#tripListContainer = tripListContainer;
@@ -27,11 +32,17 @@ export default class TripListPresenter {
     this.#offers = [...this.#tripsModel.offers];
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
+    this.#sourcedBoardTrips = [...this.#tripsModel.trips];
 
     this.#renderBoard();
   }
 
   #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortTrips(sortType);
   };
 
   #renderSort() {
@@ -51,12 +62,19 @@ export default class TripListPresenter {
     this.#tripPresenters.set(trip.id, tripPresenter);
   }
 
+  #sortTrips(sortType = SortTypes.DAY) {
+    sortTrips(this.#trips, sortType);
+
+    this.#currentSortType = sortType;
+  }
+
   #handleModeChange = () => {
     this.#tripPresenters.forEach((presenter) => presenter.resetView());
   };
 
   #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
     this.#trips = updateItem(this.#trips, updatedTrip);
+    this.#sourcedBoardTrips = updateItem(this.#sourcedBoardTrips, updatedTrip);
     this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
   };
 

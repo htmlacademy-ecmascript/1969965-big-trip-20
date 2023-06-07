@@ -2,20 +2,15 @@ import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 import { DateFormats } from '../constants.js';
 import { formatDate } from '../utils/common.js';
+import { sortTrips } from '../utils/sorting.js';
 
 function getTotalPrice(trips) {
   const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
   return total;
 }
 
-function sortTrips(trips) {
-  const sortedTrips = trips.sort((trip1, trip2) =>
-    dayjs(trip1['timeStart'].valueOf()) - dayjs(trip2['timeStart'].valueOf()));
-  return sortedTrips;
-}
-
 function getDatesTrack(trips) {
-  const sortedTrips = sortTrips(trips);
+  const sortedTrips = sortTrips(trips, 'day');
   const startDate = formatDate(sortedTrips[0].timeStart, DateFormats.MONTH_DAY);
   let endDate = null;
   if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
@@ -28,7 +23,7 @@ function getDatesTrack(trips) {
 }
 
 function getDestinationsTrack(trips, destinations) {
-  const sortedTrips = sortTrips(trips);
+  const sortedTrips = sortTrips(trips, 'day');
   const tripsDestinationsIds = sortedTrips.map(({destination}) => destination);
   const tripsDestinationsNames = [];
   tripsDestinationsIds.forEach((elem) => {

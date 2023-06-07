@@ -1,5 +1,5 @@
 import FiltersPresenter from './presenter/filters-presenter.js';
-import TripListPresenter from './presenter/trip-list-presenter.js';
+import TripListPresenter from './presenter/board-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 
