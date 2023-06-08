@@ -2,9 +2,9 @@ import { filter } from '../utils/filter.js';
 
 function generateFilter(trips) {
   return Object.entries(filter).map(
-    ([filterType, filterTasks]) => ({
+    ([filterType, filterTrips]) => ({
       type: filterType,
-      count: filterTasks(trips).length,
+      count: filterTrips(trips).length,
     }),
   );
 }
