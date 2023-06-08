@@ -32,7 +32,7 @@ export default class BoardPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    this.#sortTrips(this.#currentSortType);
+    this.#sortTrips();
     this.#renderBoard();
   }
 
@@ -98,7 +98,7 @@ export default class BoardPresenter {
   #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
     this.#trips = updateItem(this.#trips, updatedTrip);
     this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
-    this.#sortTrips(this.#currentSortType);
+    this.#sortTrips();
     this.#clearTripList();
     this.#renderList();
   };

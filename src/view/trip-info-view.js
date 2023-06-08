@@ -10,7 +10,7 @@ function getTotalPrice(trips) {
 }
 
 function getDatesTrack(trips) {
-  const sortedTrips = sortTrips(trips, 'day');
+  const sortedTrips = sortTrips(trips);
   const startDate = formatDate(sortedTrips[0].timeStart, DateFormats.MONTH_DAY);
   let endDate = null;
   if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
@@ -23,7 +23,7 @@ function getDatesTrack(trips) {
 }
 
 function getDestinationsTrack(trips, destinations) {
-  const sortedTrips = sortTrips(trips, 'day');
+  const sortedTrips = sortTrips(trips);
   const tripsDestinationsIds = sortedTrips.map(({destination}) => destination);
   const tripsDestinationsNames = [];
   tripsDestinationsIds.forEach((elem) => {
