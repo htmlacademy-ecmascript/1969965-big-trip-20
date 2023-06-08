@@ -49,4 +49,16 @@ const SortTypes = {
   OFFERS: 'offers'
 };
 
-export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData, FilterTypes, SortTypes };
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_TRIP',
+  ADD_TASK: 'ADD_TRIP',
+  DELETE_TASK: 'DELETE_TRIP',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData, FilterTypes, SortTypes, UpdateType, UserAction };

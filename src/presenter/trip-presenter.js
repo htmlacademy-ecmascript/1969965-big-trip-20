@@ -1,6 +1,7 @@
 import { render, replace, remove } from '../framework/render.js';
 import TripItemView from '../view/trip-item-view.js';
 import EventFormView from '../view/event-form-view.js';
+import { UserAction, UpdateType } from '../constants.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -98,11 +99,11 @@ export default class TripPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite}, this.#offers, this.#destinations, this.#destinationsList);
+    this.#handleDataChange(UserAction.UPDATE_TRIP, UpdateType.MINOR, {...this.#trip, isFavorite: !this.#trip.isFavorite}, this.#offers, this.#destinations, this.#destinationsList);
   };
 
   #handleFormSubmit = (trip) => {
-    this.#handleDataChange(trip, this.#offers, this.#destinations, this.#destinationsList);
+    this.#handleDataChange(UserAction.UPDATE_TRIP, UpdateType.MINOR, trip, this.#offers, this.#destinations, this.#destinationsList);
     this.#replaceFormToTrip();
   };
 }

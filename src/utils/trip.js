@@ -1,6 +1,6 @@
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
+// function updateItem(items, update) {
+//   return items.map((item) => item.id === update.id ? update : item);
+// }
 
 function getCurrentDestination (destination, destinations) {
   const currentDestinationList = destinations.filter((elem) => elem.id === destination);
@@ -40,4 +40,4 @@ function isDestinationCorrect (validDestinations, userDestination) {
   return validDestinations.some((dest) => userDestination === dest.name);
 }
 
-export { updateItem, getCurrentDestination, isItemChecked, getCurrentOffers, getOffers, isDestinationCorrect};
+export { getCurrentDestination, isItemChecked, getCurrentOffers, getOffers, isDestinationCorrect};
