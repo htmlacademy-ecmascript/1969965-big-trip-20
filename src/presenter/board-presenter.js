@@ -1,5 +1,5 @@
 import { RenderPosition, render } from '../framework/render.js';
-import { updateItem } from '../utils/trip.js';
+// import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
@@ -10,7 +10,7 @@ import { SortTypes } from '../constants.js';
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
-  #trips;
+  // #trips;
   #offers;
   #destinations;
   #destinationsList;
@@ -18,28 +18,33 @@ export default class BoardPresenter {
   #sortingComponent;
   #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
   #tripPresenters = new Map();
-  #currentSortType = SortTypes.DAY;
+  #currentSortType;
 
   constructor({tripListContainer, tripsModel}) {
     this.#tripListContainer = tripListContainer;
     this.#tripsModel = tripsModel;
   }
 
+  get trips() {
+    sortTrips(this.#tripsModel.trips, this.#currentSortType);
+    return this.#tripsModel.trips;
+  }
+
   init() {
     this.#tripListComponent = new TripListView();
-    this.#trips = [...this.#tripsModel.trips];
+    // this.#trips = [...this.#tripsModel.trips];
     this.#offers = [...this.#tripsModel.offers];
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    this.#sortTrips();
+    // this.#sortTrips();
     this.#renderBoard();
   }
 
   #renderBoard() {
     render(this.#tripListComponent, this.#tripListContainer);
 
-    if (this.#trips.length < 1) {
+    if (this.trips.length < 1) {
       this.#renderNoTrips();
       return;
     }
@@ -64,15 +69,15 @@ export default class BoardPresenter {
       return;
     }
 
-    this.#sortTrips(sortType);
+    this.#currentSortType = sortType;
     this.#clearTripList();
     this.#renderList();
   };
 
-  #sortTrips(sortType) {
-    sortTrips(this.#trips, sortType);
-    this.#currentSortType = sortType;
-  }
+  // #sortTrips(sortType) {
+  //   sortTrips(this.#trips, sortType);
+  //   this.#currentSortType = sortType;
+  // }
 
   #clearTripList() {
     this.#tripPresenters.forEach((presenter) => presenter.destroy());
@@ -80,8 +85,8 @@ export default class BoardPresenter {
   }
 
   #renderList() {
-    for (let i = 0; i < this.#trips.length; i++) {
-      this.#renderTrip(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
+    for (let i = 0; i < this.trips.length; i++) {
+      this.#renderTrip(this.trips[i], this.#offers, this.#destinations, this.#destinationsList);
     }
   }
 
@@ -96,11 +101,11 @@ export default class BoardPresenter {
   };
 
   #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
-    this.#trips = updateItem(this.#trips, updatedTrip);
+    // this.#trips = updateItem(this.#trips, updatedTrip);
     this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
-    this.#sortTrips();
-    this.#clearTripList();
-    this.#renderList();
+    // this.#sortTrips();
+    // this.#clearTripList();
+    // this.#renderList();
   };
 }
 
