@@ -98,6 +98,9 @@ export default class BoardPresenter {
   #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
     this.#trips = updateItem(this.#trips, updatedTrip);
     this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
+    this.#sortTrips(this.#currentSortType);
+    this.#clearTripList();
+    this.#renderList();
   };
 }
 
