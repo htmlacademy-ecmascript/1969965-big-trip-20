@@ -3,7 +3,6 @@ import BoardPresenter from './presenter/board-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 import FilterModel from './modell/filter-model.js';
-// import { generateFilter } from './mock/filter.js';
 
 const infoHeaderElement = document.querySelector('.trip-main');
 const filtersContainerElement = document.querySelector('.trip-controls__filters');
@@ -17,8 +16,6 @@ const boardPresenter = new BoardPresenter({
   tripListContainer: mainSectionElement,
   tripsModel});
 const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel});
-
-// const filters = generateFilter(tripsModel.trips);
 
 tripInfoPresenter.init();
 filtersPresenter.init();
