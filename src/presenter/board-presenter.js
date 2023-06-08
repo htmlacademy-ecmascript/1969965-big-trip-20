@@ -5,6 +5,7 @@ import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
+import { UpdateType, UserAction } from '../constants.js';
 // import { SortTypes } from '../constants.js';
 
 export default class BoardPresenter {
@@ -113,12 +114,34 @@ export default class BoardPresenter {
     this.#tripPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update, offers, destinations, destinationsList) => {
-    console.log(actionType, updateType, update, offers, destinations, destinationsList);
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_TRIP:
+        this.#tripsModel.updateTrip(updateType, update);
+        break;
+      case UserAction.ADD_TRIP:
+        this.#tripsModel.addTrip(updateType, update);
+        break;
+      case UserAction.DELETE_TRIP:
+        this.#tripsModel.deleteTrip(updateType, update);
+        break;
+    }
   };
 
   #handleModelEvent = (updateType, data) => {
     console.log(updateType, data);
+
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#tripPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+
+        break;
+      case UpdateType.MAJOR:
+
+        break;
+    }
   };
 
   /*
