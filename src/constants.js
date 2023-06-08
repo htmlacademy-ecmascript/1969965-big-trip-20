@@ -50,9 +50,9 @@ const SortTypes = {
 };
 
 const UserAction = {
-  UPDATE_TASK: 'UPDATE_TRIP',
-  ADD_TASK: 'ADD_TRIP',
-  DELETE_TASK: 'DELETE_TRIP',
+  UPDATE_TRIP: 'UPDATE_TRIP',
+  ADD_TRIP: 'ADD_TRIP',
+  DELETE_TRIP: 'DELETE_TRIP',
 };
 
 const UpdateType = {

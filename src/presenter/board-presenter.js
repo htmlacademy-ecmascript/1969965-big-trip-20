@@ -6,15 +6,9 @@ import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction } from '../constants.js';
-// import { SortTypes } from '../constants.js';
-
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
-  // #trips;
-  // #offers;
-  // #destinations;
-  // #destinationsList;
   #tripListComponent;
   #sortingComponent;
   #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
@@ -46,12 +40,6 @@ export default class BoardPresenter {
 
   init() {
     this.#tripListComponent = new TripListView();
-    // this.#trips = [...this.#tripsModel.trips];
-    // this.#offers = [...this.#tripsModel.offers];
-    // this.#destinations = [...this.#tripsModel.destinations];
-    // this.#destinationsList = [...this.#tripsModel.destinationsList];
-
-    // this.#sortTrips();
     this.#renderBoard();
   }
 
@@ -105,22 +93,6 @@ export default class BoardPresenter {
     this.#renderBoard();
   };
 
-  // #sortTrips(sortType) {
-  //   sortTrips(this.#trips, sortType);
-  //   this.#currentSortType = sortType;
-  // }
-
-  // #clearTripList() {
-  //   this.#tripPresenters.forEach((presenter) => presenter.destroy());
-  //   this.#tripPresenters.clear();
-  // }
-
-  // #renderList() {
-  //   for (let i = 0; i < this.trips.length; i++) {
-  //     this.#renderTrip(this.trips[i], this.offers, this.destinations, this.destinationsList);
-  //   }
-  // }
-
   #renderTrip(trip, offers, destinations, destinationsList) {
     const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleViewAction, onModeChange: this.#handleModeChange});
     tripPresenter.init(trip, offers, destinations, destinationsList);
@@ -148,7 +120,7 @@ export default class BoardPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#tripPresenters.get(data.id).init(data);
+        this.#tripPresenters.get(data.id).init(data, this.offers, this.destinations, this.destinationsList);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -160,15 +132,5 @@ export default class BoardPresenter {
         break;
     }
   };
-
-  /*
-  #handleTripChange = (updatedTrip, offers, destinations, destinationsList) => {
-    // this.#trips = updateItem(this.#trips, updatedTrip);
-    this.#tripPresenters.get(updatedTrip.id).init(updatedTrip, offers, destinations, destinationsList);
-    // this.#sortTrips();
-    // this.#clearTripList();
-    // this.#renderList();
-  };
-  */
 }
 

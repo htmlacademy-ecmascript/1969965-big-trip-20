@@ -3,7 +3,6 @@ import { getMockOffers } from '../mock/mock-offers.js';
 import { getMockDestinations } from '../mock/mock-destinations.js';
 import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
-// import { UpdateType, UserAction } from '../constants.js';
 export default class TripsModel extends Observable {
 
   #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);

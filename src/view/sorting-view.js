@@ -4,7 +4,7 @@ import { turnFirstCharToUppercase } from '../utils/common';
 
 function createSortingContainerTemplate(currentSortType) {
   const sortingItems = Object.values(SortTypes);
-  // ${currentSortType === sortingType ? 'checked' : ''}
+
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     ${sortingItems.map((sortingType) => `<div class="trip-sort__item  trip-sort__item--${sortingType}">
     <input id="sort-${sortingType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortingType}" ${currentSortType === sortingType ? 'checked' : ''} ${sortingType === 'event' || sortingType === 'offers' ? 'disabled' : ''} data-sort-type=${sortingType}>
