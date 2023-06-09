@@ -145,7 +145,7 @@ export default class EventFormView extends AbstractStatefulView {
   #datepickerStart;
   #datepickerEnd;
 
-  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick, onDeleteClick, onCancelClick}) {
+  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick, onDeleteClick}) {
     super();
     this.#destinationsList = destinationsList;
     this._setState(EventFormView.parseTripToState(trip));
@@ -154,7 +154,6 @@ export default class EventFormView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onRollUpBtnClick;
     this.#handleDeleteClick = onDeleteClick;
-    this.#handleDeleteClick = onCancelClick;
     this._restoreHandlers();
   }
 

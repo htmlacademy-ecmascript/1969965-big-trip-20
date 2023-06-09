@@ -27,7 +27,7 @@ export default class NewEventFormPresenter {
       return;
     }
 
-    this.#eventFormComponent = new EventFormView({offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onFormSubmit: this.#handleFormSubmit, onCancelClick: this.#handleCancelClick});
+    this.#eventFormComponent = new EventFormView({offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onFormSubmit: this.#handleFormSubmit, onDeleteClick: this.#handleCancelClick});
 
     render(this.#eventFormComponent, this.#tripListContainer.element, RenderPosition.AFTERBEGIN);
 
