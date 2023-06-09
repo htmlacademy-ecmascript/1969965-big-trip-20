@@ -6,6 +6,7 @@ import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
+import he from 'he';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
@@ -50,7 +51,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
         ${destinationsListTemplate}
       </div>
 
@@ -67,7 +68,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${price}" required>
+       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required>
      </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
