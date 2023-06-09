@@ -4,7 +4,7 @@ import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
-import { SortTypes, UpdateType, UserAction } from '../constants.js';
+import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
 export default class BoardPresenter {
   #tripListContainer;
@@ -12,9 +12,10 @@ export default class BoardPresenter {
   #filterModel;
   #tripListComponent;
   #sortingComponent;
-  #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
+  #noTripComponent;
   #tripPresenters = new Map();
   #currentSortType = SortTypes.DAY;
+  #filterType = FilterTypes.EVERYTHING;
 
   constructor({tripListContainer, tripsModel, filterModel}) {
     this.#tripListContainer = tripListContainer;
@@ -25,9 +26,9 @@ export default class BoardPresenter {
   }
 
   get trips() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const trips = this.#tripsModel.trips;
-    const filteredTrips = filter[filterType](trips);
+    const filteredTrips = filter[this.#filterType](trips);
 
     sortTrips(filteredTrips, this.#currentSortType);
     return filteredTrips;
@@ -71,7 +72,10 @@ export default class BoardPresenter {
     this.#tripPresenters.clear();
 
     remove(this.#sortingComponent);
-    remove(this.#noTripComponent);
+
+    if(this.#noTripComponent) {
+      remove(this.#noTripComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortTypes.DAY;
@@ -79,7 +83,8 @@ export default class BoardPresenter {
   }
 
   #renderNoTrips() {
-    render(this.#noTripComponent, this.#tripListContainer);
+    this.#noTripComponent = new NoTripView({filterType: this.#filterType});
+    render(this.#noTripComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderSort() {
