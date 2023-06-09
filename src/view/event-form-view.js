@@ -99,7 +99,7 @@ function createDestinationsListTemplate(destinationsList) {
 
 function createDeleteAndRollUpBtnsTemplate(id) {
   const hideButtonClass = 'hidden';
-  return `<button class="event__reset-btn" type="reset">Cancel</button>
+  return `<button class="event__reset-btn" type="reset">${id === '' ? 'Cancel' : 'Delete'}</button>
     <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
     <span class="visually-hidden">Open event</span>
     </button>
