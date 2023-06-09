@@ -1,29 +1,36 @@
 import { RenderPosition, render, remove } from '../framework/render.js';
-// import { updateItem } from '../utils/trip.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction } from '../constants.js';
+import { filter } from '../utils/filter.js';
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
+  #filterModel;
   #tripListComponent;
   #sortingComponent;
   #noTripComponent = new NoTripView({filterType: 'EVERYTHING'});
   #tripPresenters = new Map();
   #currentSortType = SortTypes.DAY;
 
-  constructor({tripListContainer, tripsModel}) {
+  constructor({tripListContainer, tripsModel, filterModel}) {
     this.#tripListContainer = tripListContainer;
     this.#tripsModel = tripsModel;
+    this.#filterModel = filterModel;
     this.#tripsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get trips() {
-    sortTrips(this.#tripsModel.trips, this.#currentSortType);
-    return this.#tripsModel.trips;
+    const filterType = this.#filterModel.filter;
+    const trips = this.#tripsModel.trips;
+    const filteredTrips = filter[filterType](trips);
+
+    sortTrips(filteredTrips, this.#currentSortType);
+    return filteredTrips;
   }
 
   get offers() {

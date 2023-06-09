@@ -1,7 +1,7 @@
 import FilterContainerView from '../view/filters-container-view.js';
 import { render, replace, remove } from '../framework/render.js';
-import { FilterTypes, UpdateType } from '../constants.js';
-import { filter } from '../utils/filter.js';
+import { UpdateType } from '../constants.js';
+
 export default class FiltersPresenter {
   #filtersContainer;
   #tripsModel;
@@ -16,19 +16,18 @@ export default class FiltersPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  // get trips() {
-  //   return this.#tripsModel.trips;
-  // }
+  get trips() {
+    return this.#tripsModel.trips;
+  }
 
   get filters() {
-    const trips = this.#tripsModel.trips;
     return this.#filterModel.filters;
   }
 
   init() {
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;
-    this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: FilterTypes.EVERYTHING, onFilterTypeChange: this.#handleFilterTypeChange});
+    this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: this.#filterModel.filter, onFilterTypeChange: this.#handleFilterTypeChange});
 
     if (prevFilterComponent === null) {
       this.#renderFilters();
