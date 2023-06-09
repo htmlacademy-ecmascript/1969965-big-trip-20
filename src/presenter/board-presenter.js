@@ -1,6 +1,7 @@
 import { RenderPosition, render, remove } from '../framework/render.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPresenter from './trip-presenter.js';
+import NewEventFormPresenter from './new-event-presenter.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
@@ -10,19 +11,32 @@ export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
   #filterModel;
-  #tripListComponent;
+
+  #tripListComponent = new TripListView();
+
   #sortingComponent;
   #noTripComponent;
   #tripPresenters = new Map();
+  #newEventFormPresenter;
   #currentSortType = SortTypes.DAY;
   #filterType = FilterTypes.EVERYTHING;
 
-  constructor({tripListContainer, tripsModel, filterModel}) {
+  constructor({tripListContainer, tripsModel, filterModel, onNewEventDestroy}) {
     this.#tripListContainer = tripListContainer;
     this.#tripsModel = tripsModel;
     this.#filterModel = filterModel;
     this.#tripsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newEventFormPresenter = new NewEventFormPresenter({tripListContainer: this.#tripListComponent, onDataChange: this.#handleViewAction, onDestroy: onNewEventDestroy});
+  }
+
+  createTrip() {
+    this.#currentSortType = SortTypes.DAY;
+
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+
+    this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
   }
 
   get trips() {
@@ -47,7 +61,6 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#tripListComponent = new TripListView();
     this.#renderBoard();
   }
 
@@ -68,6 +81,7 @@ export default class BoardPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}){
+    this.#newEventFormPresenter.destroy();
     this.#tripPresenters.forEach((presenter) => presenter.destroy());
     this.#tripPresenters.clear();
 
@@ -112,6 +126,7 @@ export default class BoardPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newEventFormPresenter.destroy();
     this.#tripPresenters.forEach((presenter) => presenter.resetView());
   };
 
