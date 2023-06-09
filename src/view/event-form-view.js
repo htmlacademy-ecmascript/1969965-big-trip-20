@@ -11,7 +11,7 @@ import he from 'he';
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip);
   const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
@@ -29,7 +29,8 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip) {
+  const {id} = trip;
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
 
@@ -72,10 +73,8 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
      </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+
+      ${createDeleteAndRollUpBtnsTemplate(id)}
     </header>`;
 }
 
@@ -96,6 +95,16 @@ function createDestinationsListTemplate(destinationsList) {
   return `<datalist id="destination-list-1">
   ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
 </datalist>`;
+}
+
+function createDeleteAndRollUpBtnsTemplate(id) {
+  const hideButtonClass = 'hidden';
+  return `<button class="event__reset-btn" type="reset">Cancel</button>
+    <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
+    <span class="visually-hidden">Open event</span>
+    </button>
+    `;
+
 }
 
 function createEventFormOfferItemTemplate(offers, trip) {
