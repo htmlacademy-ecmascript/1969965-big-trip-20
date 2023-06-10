@@ -20,16 +20,16 @@ export default class TripInfoPresenter {
     return destinations;
   }
 
-  init(trips, destinations) {
-    this.#renderTripInfo(trips, destinations);
+  init() {
+    this.#renderTripInfo();
   }
 
-  #renderTripInfo(trips, destinations) {
+  #renderTripInfo() {
 
-    // if (trips.length < 1) {
-    //   return;
-    // }
+    if (this.trips.length < 1) {
+      return;
+    }
 
-    render(new TripInfoView({trips: trips, destinations: destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
+    render(new TripInfoView({trips: this.trips, destinations: this.destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 }

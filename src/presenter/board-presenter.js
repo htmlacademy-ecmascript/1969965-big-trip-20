@@ -8,7 +8,6 @@ import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
 import LoadingView from '../view/loading-view.js';
-import TripInfoPresenter from './trip-info-presenter.js';
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
@@ -21,7 +20,6 @@ export default class BoardPresenter {
   #noTripComponent;
   #tripPresenters = new Map();
   #newEventFormPresenter;
-  #tripInfoPresenter;
   #currentSortType = SortTypes.DAY;
   #filterType = FilterTypes.EVERYTHING;
   #isLoading = true;
@@ -33,9 +31,7 @@ export default class BoardPresenter {
     this.#tripsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    const infoHeaderElement = document.querySelector('.trip-main');
     this.#newEventFormPresenter = new NewEventFormPresenter({tripListContainer: this.#tripListComponent, onDataChange: this.#handleViewAction, onDestroy: onNewEventDestroy});
-    this.#tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel: this.#tripsModel});
   }
 
   createTrip() {
@@ -79,6 +75,12 @@ export default class BoardPresenter {
       return;
     }
 
+    if (this.destinations. length === 0) {
+      this.#filterType = FilterTypes.ERROR;
+      this.#renderNoTrips();
+      return;
+    }
+
     const trips = this.trips;
     const tripsCount = trips.length;
 
@@ -88,7 +90,6 @@ export default class BoardPresenter {
     }
 
     this.#renderSort();
-    this.#tripInfoPresenter.init(this.trips, this.destinations);
 
     for (let i = 0; i < tripsCount; i++) {
       this.#renderTrip(this.trips[i], this.offers, this.destinations, this.destinationsList);

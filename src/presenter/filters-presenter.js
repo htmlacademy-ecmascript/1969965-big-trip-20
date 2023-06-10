@@ -24,6 +24,10 @@ export default class FiltersPresenter {
     return this.#filterModel.filters;
   }
 
+  get destinations() {
+    return this.#filterModel.destinations;
+  }
+
   init() {
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;

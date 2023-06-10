@@ -22,7 +22,7 @@ export default class TripsModel extends Observable {
       this.#destinations = destinations.map(this.#adaptDestinationToClient);
       this.#destinationsList = this.#destinations.map(({name}) => name);
     } catch(err) {
-      this.#trips = [];
+      this.#destinations = [];
     }
 
     this._notify(UpdateType.INIT);
