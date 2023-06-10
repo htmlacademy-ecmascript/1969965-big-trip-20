@@ -23,8 +23,8 @@ export default class TripsModel extends Observable {
       this.#destinationsList = this.#destinations.map(({name}) => name);
     } catch(err) {
       this.#destinations = [];
+      this.#offers = [];
     }
-
     this._notify(UpdateType.INIT);
   }
 
@@ -44,16 +44,20 @@ export default class TripsModel extends Observable {
     return this.#destinationsList;
   }
 
-  updateTrip(updateType, update) {
+  async updateTrip(updateType, update) {
     const index = this.#trips.findIndex((trip) => trip.id === update.id);
 
     if(index === -1) {
       throw new Error('Can\'t update unexisting trip');
     }
-
-    this.#trips = [...this.#trips.slice(0, index), update, ...this.#trips.slice(index + 1)];
-
-    this._notify(updateType, update);
+    try {
+      const response = await this.#tripsApiService.updateTrip(update);
+      const updatedTrip = this.#adaptTripToClient(response);
+      this.#trips = [...this.#trips.slice(0, index), updatedTrip, ...this.#trips.slice(index + 1)];
+      this._notify(updateType, updatedTrip);
+    } catch(err) {
+      throw new Error('Can\'t update task');
+    }
   }
 
   addTrip(updateType, update) {

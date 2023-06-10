@@ -19,7 +19,6 @@ const tripsModel = new TripsModel({tripsApiService: new TripsApiService(END_POIN
 const filterModel = new FilterModel();
 const newEventFormButtonComponent = new newEventFormButtonView({onClick: handleNewEventButtonClick});
 const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel: tripsModel});
-const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel, filterModel});
 
 tripsModel.init()
   .finally(() => {
@@ -27,12 +26,11 @@ tripsModel.init()
     tripInfoPresenter.init();
   });
 
+const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel, filterModel});
+
 const boardPresenter = new BoardPresenter({
   tripListContainer: mainSectionElement,
   tripsModel, filterModel, onNewEventDestroy: handleNewEventFormClose});
-
-filtersPresenter.init();
-boardPresenter.init();
 
 function handleNewEventFormClose() {
   newEventFormButtonComponent.element.disabled = false;
@@ -43,4 +41,5 @@ function handleNewEventButtonClick() {
   newEventFormButtonComponent.element.disabled = true;
 }
 
+filtersPresenter.init();
 boardPresenter.init();
