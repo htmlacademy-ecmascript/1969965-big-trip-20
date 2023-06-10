@@ -166,6 +166,3 @@ const mockTrips = [
 function getRandomTrip() {
   return getRandomArrayElement(mockTrips);
 }
-
-export { getRandomTrip };
-

@@ -1,11 +1,12 @@
-import { getRandomTrip } from '../mock/mock-trips.js';
+// import { getRandomTrip } from '../mock/mock-trips.js';
 import { getMockOffers } from '../mock/mock-offers.js';
 import { getMockDestinations } from '../mock/mock-destinations.js';
-import { TRIP_COUNT } from '../constants.js';
+// import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
 export default class TripsModel extends Observable {
   #tripsApiService;
-  #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
+  // #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
+  #trips = [];
   #offers = getMockOffers();
   #destinations = getMockDestinations();
   #destinationsList = this.#destinations.map(({name}) => name);
@@ -14,9 +15,9 @@ export default class TripsModel extends Observable {
     super();
     this.#tripsApiService = tripsApiService;
 
-    this.#tripsApiService.trips.then((trips) => {
-      console.log(trips.map(this.#adaptToClient));
-    });
+    // this.#tripsApiService.trips.then((trips) => {
+    //   console.log(trips.map(this.#adaptToClient));
+    // });
 
     this.#tripsApiService.offers.then((offers) => {
       console.log(offers);
@@ -30,6 +31,16 @@ export default class TripsModel extends Observable {
   get trips() {
     return this.#trips;
   }
+
+  async init() {
+    try {
+      const trips = await this.#tripsApiService.trips;
+      this.#trips = trips.map(this.#adaptToClient);
+    } catch(err) {
+      this.#trips = [];
+    }
+  }
+
 
   get offers() {
     return this.#offers;
