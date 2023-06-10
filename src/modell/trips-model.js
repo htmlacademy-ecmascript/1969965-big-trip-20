@@ -60,28 +60,40 @@ export default class TripsModel extends Observable {
     }
   }
 
-  addTrip(updateType, update) {
-    this.#trips = [
-      update,
-      ...this.#trips,
-    ];
-
-    this._notify(updateType, update);
+  async addTrip(updateType, update) {
+    try {
+      const response = await this.#tripsApiService.addTrip(update);
+      const newTrip = this.#adaptTripToClient(response);
+      this.#trips = [
+        newTrip,
+        ...this.#trips,
+      ];
+      this._notify(updateType, newTrip);
+    } catch(err) {
+      throw new Error('Can\'t add task');
+    }
   }
 
-  deleteTrip(updateType, update) {
+  async deleteTrip(updateType, update) {
     const index = this.#trips.findIndex((trip) => trip.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting trip');
     }
 
-    this.#trips = [
-      ...this.#trips.slice(0, index),
-      ...this.#trips.slice(index + 1),
-    ];
+    try {
+      await this.#tripsApiService.deleteTrip(update);
+      this.#trips = [
+        ...this.#trips.slice(0, index),
+        ...this.#trips.slice(index + 1),
+      ];
 
-    this._notify(updateType);
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete task');
+    }
+
+
   }
 
   #adaptTripToClient(trip) {

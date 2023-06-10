@@ -1,6 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EventFormView from '../view/event-form-view.js';
-import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../constants.js';
 
 export default class NewEventFormPresenter {
@@ -48,7 +47,7 @@ export default class NewEventFormPresenter {
   }
 
   #handleFormSubmit = (trip) => {
-    this.#handleDataChange(UserAction.ADD_TRIP, UpdateType.MINOR, {...trip, id: nanoid()});
+    this.#handleDataChange(UserAction.ADD_TRIP, UpdateType.MINOR, trip);
     this.destroy();
   };
 
