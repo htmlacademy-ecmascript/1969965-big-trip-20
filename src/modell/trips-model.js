@@ -104,6 +104,5 @@ export default class TripsModel extends Observable {
     delete adaptedDestination['pictures'];
 
     return adaptedDestination;
-
   }
 }

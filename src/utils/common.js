@@ -1,13 +1,5 @@
 import dayjs from 'dayjs';
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function getRandomNumber(num) {
-  return Math.floor(Math.random() * num);
-}
-
 function formatDate(date, format) {
   if (date === '') {
     return '';
@@ -42,4 +34,4 @@ function turnFirstCharToUppercase(string) {
   return result;
 }
 
-export { getRandomArrayElement, getRandomNumber, formatDate, findDifference, formatDifference, turnFirstCharToUppercase };
+export { formatDate, findDifference, formatDifference, turnFirstCharToUppercase };

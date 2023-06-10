@@ -1,6 +1,5 @@
 import FiltersPresenter from './presenter/filters-presenter.js';
 import BoardPresenter from './presenter/board-presenter.js';
-import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 import FilterModel from './modell/filter-model.js';
 import newEventFormButtonView from './view/new-event-form-button-view.js';
@@ -25,9 +24,6 @@ const boardPresenter = new BoardPresenter({
   tripListContainer: mainSectionElement,
   tripsModel, filterModel, onNewEventDestroy: handleNewEventFormClose});
 
-const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel});
-
-
 function handleNewEventFormClose() {
   newEventFormButtonComponent.element.disabled = false;
 }
@@ -38,8 +34,9 @@ function handleNewEventButtonClick() {
 }
 
 render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
+
 tripsModel.init();
 filtersPresenter.init();
 boardPresenter.init();
-tripInfoPresenter.init();
+
 

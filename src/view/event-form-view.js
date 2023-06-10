@@ -238,7 +238,7 @@ export default class EventFormView extends AbstractStatefulView {
     const checkElements = this.element.querySelectorAll('.event__offer-checkbox');
     if (evt.target.matches('.event__offer-checkbox')) {
       const offers = [];
-      checkElements.forEach((offer) => offer.checked ? offers.push(Number(offer.id.slice(12))) : '');
+      checkElements.forEach((offer) => offer.checked ? offers.push(offer.id.slice(12)) : '');
       this._setState({
         offers: offers,
       });
