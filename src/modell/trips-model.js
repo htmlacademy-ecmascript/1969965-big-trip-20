@@ -17,6 +17,14 @@ export default class TripsModel extends Observable {
     this.#tripsApiService.trips.then((trips) => {
       console.log(trips.map(this.#adaptToClient));
     });
+
+    this.#tripsApiService.offers.then((offers) => {
+      console.log(offers);
+    });
+
+    this.#tripsApiService.destinations.then((destinations) => {
+      console.log(destinations);
+    });
   }
 
   get trips() {
