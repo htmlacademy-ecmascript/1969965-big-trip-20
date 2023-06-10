@@ -24,10 +24,11 @@ export default class TripsApiService extends ApiService {
   }
 
   async updateTrip(trip) {
+    const adaptedTrip = this.#adaptToServer(trip);
     const response = await this._load({
       url: `points/${trip.id}`,
       method: Method.PUT,
-      body: JSON.stringify(this.#adaptToServer(trip)),
+      body: JSON.stringify(adaptedTrip),
       headers: new Headers({'Content-Type':'application/json'}),
     });
 
@@ -37,10 +38,11 @@ export default class TripsApiService extends ApiService {
   }
 
   async addTrip(trip) {
+    const adaptedTrip = this.#adaptToServer(trip);
     const response = await this._load({
       url: 'points',
       method: Method.POST,
-      body: JSON.stringify(this.#adaptToServer(trip)),
+      body: JSON.stringify(adaptedTrip),
       headers: new Headers({'Content-Type' : 'application/json'}),
     });
 
@@ -60,13 +62,17 @@ export default class TripsApiService extends ApiService {
 
   #adaptToServer(trip) {
     const adaptedTrip = {...trip,
-      'base_price' : trip.price,
-      'date_from' : trip.timeStart.toISOString(),
-      'date_to': trip.timeEnd.toISOString(),
+      'base_price' : Number(trip.price),
+      'date_from' : trip.timeStart instanceof Date ? trip.timeStart.toISOString() : trip.timeStart,
+      'date_to': trip.timeEnd instanceof Date ? trip.timeEnd.toISOString() : trip.timeEnd,
+      'is_favorite': trip.isFavorite,
     };
 
     delete adaptedTrip.price;
     delete adaptedTrip.timeStart;
     delete adaptedTrip.timeEnd;
+    delete adaptedTrip.isFavorite;
+
+    return adaptedTrip;
   }
 }

@@ -9,10 +9,21 @@ import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCo
 import he from 'he';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
-  const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
+  const {
+    destination,
+    timeStart,
+    timeEnd,
+    type,
+    price,
+    isNameExists,
+    isPriceExists,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip);
-  const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting);
+  const offersTemplate = createEventFormOfferItemTemplate(offers, trip, isDisabled);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
   return `<li class="trip-events__item">
@@ -29,7 +40,7 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting) {
   const {id} = trip;
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
@@ -44,7 +55,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
         ${eventTypesTemplate}
       </div>
 
@@ -52,16 +63,16 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}required>
         ${destinationsListTemplate}
       </div>
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
        </div>
 
        <div class="event__field-group  event__field-group--price">
@@ -69,12 +80,12 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required>
+       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required ${isDisabled ? 'disabled' : ''}>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
 
-      ${createDeleteAndRollUpBtnsTemplate(id)}
+      ${createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting)}
     </header>`;
 }
 
@@ -97,9 +108,22 @@ function createDestinationsListTemplate(destinationsList) {
 </datalist>`;
 }
 
-function createDeleteAndRollUpBtnsTemplate(id) {
+function createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting) {
+  const deleteCancelButtonText = () => {
+    if(id === '') {
+      if(isDeleting) {
+        return 'Canceling';
+      }
+      return 'Cancel';
+    }
+    if(isDeleting) {
+      return 'Deleting';
+    }
+    return 'Delete';
+  };
+
   const hideButtonClass = 'hidden';
-  return `<button class="event__reset-btn" type="reset">${id === '' ? 'Cancel' : 'Delete'}</button>
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${deleteCancelButtonText()}</button>
     <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
     <span class="visually-hidden">Open event</span>
     </button>
@@ -107,13 +131,13 @@ function createDeleteAndRollUpBtnsTemplate(id) {
 
 }
 
-function createEventFormOfferItemTemplate(offers, trip) {
+function createEventFormOfferItemTemplate(offers, trip, isDisabled) {
   const currentOffers = getCurrentOffers(offers, trip);
   const chosenOffers = trip.offers;
 
   return `<div class="event__available-offers">
     ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)}>
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
   <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -144,7 +168,6 @@ function createEventFormDestinationPictureTemplate(destination, destinations) {
             alt="${description}"></img>`).join('')}</div>
           </div>`;
 }
-
 export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
   #destinations;
@@ -293,13 +316,22 @@ export default class EventFormView extends AbstractStatefulView {
   }
 
   static parseTripToState(trip) {
-    return {...trip, isNameExists: trip.destination !== '', isPriceExists: trip.price !== ''};
+    return {...trip,
+      isNameExists: trip.destination !== '',
+      isPriceExists: trip.price !== '',
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToTrip(state) {
     const trip = {...state};
     delete trip.isNameExists;
     delete trip.isPriceExists;
+    delete trip.isDisabled;
+    delete trip.isSaving;
+    delete trip.isDeleting;
     return trip;
   }
 }
