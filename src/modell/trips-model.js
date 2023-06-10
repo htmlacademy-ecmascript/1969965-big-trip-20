@@ -15,7 +15,7 @@ export default class TripsModel extends Observable {
     this.#tripsApiService = tripsApiService;
 
     this.#tripsApiService.trips.then((trips) => {
-      console.log(trips);
+      console.log(trips.map(this.#adaptToClient));
     });
   }
 
@@ -69,5 +69,21 @@ export default class TripsModel extends Observable {
     ];
 
     this._notify(updateType);
+  }
+
+  #adaptToClient(trip) {
+    const adaptedTrip = {...trip,
+      price: trip['base_price'],
+      timeStart: trip['date_from'],
+      timeEnd: trip['date_to'],
+      isFavorite: trip['is_favorite']
+    };
+
+    delete adaptedTrip['base_price'];
+    delete adaptedTrip['date_from'];
+    delete adaptedTrip['date_to'];
+    delete adaptedTrip['is_favorite'];
+
+    return adaptedTrip;
   }
 }
