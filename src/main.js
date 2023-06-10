@@ -5,12 +5,16 @@ import TripsModel from './modell/trips-model.js';
 import FilterModel from './modell/filter-model.js';
 import newEventFormButtonView from './view/new-event-form-button-view.js';
 import { render, RenderPosition } from './framework/render.js';
+import TripsApiService from './trips-api-service.js';
+
+const AUTHORIZATION = 'Basic d7hgj398fll45dfg';
+const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
 
 const infoHeaderElement = document.querySelector('.trip-main');
 const filtersContainerElement = document.querySelector('.trip-controls__filters');
 const mainSectionElement = document.querySelector('.trip-events');
 
-const tripsModel = new TripsModel();
+const tripsModel = new TripsModel({tripsApiService: new TripsApiService(END_POINT, AUTHORIZATION)});
 const filterModel = new FilterModel();
 
 const newEventFormButtonComponent = new newEventFormButtonView({onClick: handleNewEventButtonClick});

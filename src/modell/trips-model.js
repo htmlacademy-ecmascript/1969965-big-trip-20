@@ -4,11 +4,20 @@ import { getMockDestinations } from '../mock/mock-destinations.js';
 import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
 export default class TripsModel extends Observable {
-
+  #tripsApiService;
   #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
   #offers = getMockOffers();
   #destinations = getMockDestinations();
   #destinationsList = this.#destinations.map(({name}) => name);
+
+  constructor({tripsApiService}) {
+    super();
+    this.#tripsApiService = tripsApiService;
+
+    this.#tripsApiService.trips.then((trips) => {
+      console.log(trips);
+    });
+  }
 
   get trips() {
     return this.#trips;
