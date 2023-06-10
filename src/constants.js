@@ -59,6 +59,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData, FilterTypes, SortTypes, UpdateType, UserAction };

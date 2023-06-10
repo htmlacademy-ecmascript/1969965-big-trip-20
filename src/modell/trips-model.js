@@ -1,6 +1,7 @@
 // import { getRandomTrip } from '../mock/mock-trips.js';
 import { getMockOffers } from '../mock/mock-offers.js';
 import { getMockDestinations } from '../mock/mock-destinations.js';
+import { UpdateType } from '../constants.js';
 // import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
 export default class TripsModel extends Observable {
@@ -39,6 +40,8 @@ export default class TripsModel extends Observable {
     } catch(err) {
       this.#trips = [];
     }
+
+    this._notify(UpdateType.INIT);
   }
 
 
