@@ -33,9 +33,10 @@ function handleNewEventButtonClick() {
   newEventFormButtonComponent.element.disabled = true;
 }
 
-render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
-
-tripsModel.init();
+tripsModel.init()
+  .finally(() => {
+    render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
+  });
 filtersPresenter.init();
 boardPresenter.init();
 
