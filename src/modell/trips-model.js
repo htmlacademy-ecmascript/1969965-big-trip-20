@@ -1,42 +1,26 @@
-// import { getRandomTrip } from '../mock/mock-trips.js';
-import { getMockOffers } from '../mock/mock-offers.js';
-import { getMockDestinations } from '../mock/mock-destinations.js';
 import { UpdateType } from '../constants.js';
-// import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
 export default class TripsModel extends Observable {
   #tripsApiService;
-  // #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
   #trips = [];
-  #offers = getMockOffers();
-  #destinations = getMockDestinations();
-  #destinationsList = this.#destinations.map(({name}) => name);
+  #offers = [];
+  #destinations = [];
+  #destinationsList = [];
 
   constructor({tripsApiService}) {
     super();
     this.#tripsApiService = tripsApiService;
-
-    // this.#tripsApiService.trips.then((trips) => {
-    //   console.log(trips.map(this.#adaptToClient));
-    // });
-
-    this.#tripsApiService.offers.then((offers) => {
-      console.log(offers);
-    });
-
-    this.#tripsApiService.destinations.then((destinations) => {
-      console.log(destinations);
-    });
-  }
-
-  get trips() {
-    return this.#trips;
   }
 
   async init() {
     try {
       const trips = await this.#tripsApiService.trips;
-      this.#trips = trips.map(this.#adaptToClient);
+      const offers = await this.#tripsApiService.offers;
+      const destinations = await this.#tripsApiService.destinations;
+      this.#trips = trips.map(this.#adaptTripToClient);
+      this.#offers = offers;
+      this.#destinations = destinations.map(this.#adaptDestinationToClient);
+      this.#destinationsList = this.#destinations.map(({name}) => name);
     } catch(err) {
       this.#trips = [];
     }
@@ -44,6 +28,9 @@ export default class TripsModel extends Observable {
     this._notify(UpdateType.INIT);
   }
 
+  get trips() {
+    return this.#trips;
+  }
 
   get offers() {
     return this.#offers;
@@ -93,7 +80,7 @@ export default class TripsModel extends Observable {
     this._notify(updateType);
   }
 
-  #adaptToClient(trip) {
+  #adaptTripToClient(trip) {
     const adaptedTrip = {...trip,
       price: trip['base_price'],
       timeStart: trip['date_from'],
@@ -107,5 +94,16 @@ export default class TripsModel extends Observable {
     delete adaptedTrip['is_favorite'];
 
     return adaptedTrip;
+  }
+
+  #adaptDestinationToClient(destination) {
+    const adaptedDestination = {...destination,
+      images: destination['pictures']
+    };
+
+    delete adaptedDestination['pictures'];
+
+    return adaptedDestination;
+
   }
 }

@@ -7,12 +7,14 @@ import SortingView from '../view/sorting-view.js';
 import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
+import LoadingView from '../view/loading-view.js';
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
   #filterModel;
 
   #tripListComponent = new TripListView();
+  #loadingComponent = new LoadingView();
 
   #sortingComponent;
   #noTripComponent;
@@ -20,6 +22,7 @@ export default class BoardPresenter {
   #newEventFormPresenter;
   #currentSortType = SortTypes.DAY;
   #filterType = FilterTypes.EVERYTHING;
+  #isLoading = true;
 
   constructor({tripListContainer, tripsModel, filterModel, onNewEventDestroy}) {
     this.#tripListContainer = tripListContainer;
@@ -66,7 +69,14 @@ export default class BoardPresenter {
 
   #renderBoard() {
     render(this.#tripListComponent, this.#tripListContainer);
-    const tripsCount = this.trips.length;
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    const trips = this.trips;
+    const tripsCount = trips.length;
 
     if (tripsCount < 1) {
       this.#renderNoTrips();
@@ -86,6 +96,8 @@ export default class BoardPresenter {
     this.#tripPresenters.clear();
 
     remove(this.#sortingComponent);
+
+    remove(this.#loadingComponent);
 
     if(this.#noTripComponent) {
       remove(this.#noTripComponent);
@@ -118,6 +130,10 @@ export default class BoardPresenter {
     this.#clearBoard();
     this.#renderBoard();
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
+  }
 
   #renderTrip(trip, offers, destinations, destinationsList) {
     const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleViewAction, onModeChange: this.#handleModeChange});
@@ -155,6 +171,11 @@ export default class BoardPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }

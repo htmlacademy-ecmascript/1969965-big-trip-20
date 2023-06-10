@@ -39,7 +39,7 @@ function handleNewEventButtonClick() {
 
 render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
 tripsModel.init();
-tripInfoPresenter.init();
 filtersPresenter.init();
 boardPresenter.init();
+tripInfoPresenter.init();
 
