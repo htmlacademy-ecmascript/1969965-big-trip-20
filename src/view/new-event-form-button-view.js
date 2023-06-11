@@ -7,7 +7,6 @@ function createNewEventButtonTemplate() {
 
 export default class newEventFormButtonView extends AbstractView {
   #handleClick;
-  #tripsModel;
 
   constructor({onClick}) {
     super();

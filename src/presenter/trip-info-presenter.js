@@ -25,6 +25,9 @@ export default class TripInfoPresenter {
   }
 
   init() {
+    if(this.destinations.length === 0) {
+      return;
+    }
     const prevInfoComponent = this.#tripInfoComponent;
     this.#tripInfoComponent = new TripInfoView({trips: this.trips, destinations: this.destinations, offers: this.offers});
 

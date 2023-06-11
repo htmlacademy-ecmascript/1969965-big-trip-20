@@ -25,7 +25,8 @@ export default class TripsModel extends Observable {
       this.#trips = [];
       this.#destinations = [];
       this.#offers = [];
-      // throw new Error();
+      this._notify(UpdateType.ERROR);
+      return;
     }
     this._notify(UpdateType.INIT);
   }

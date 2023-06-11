@@ -6,7 +6,7 @@ const FilterMessages = {
   [FilterTypes.PAST]: 'There are no past events now',
   [FilterTypes.PRESENT]: 'There are no present events now',
   [FilterTypes.FUTURE]: 'There are no future events now',
-  // ['ERROR']: 'Ooops! Something went wrong, try again later...'
+  ['ERROR']: 'Ooops! Something went wrong, try again later...'
 };
 
 function createNoTripTemplate(filterType) {

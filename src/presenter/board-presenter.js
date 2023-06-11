@@ -9,6 +9,7 @@ import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js'
 import { filter } from '../utils/filter.js';
 import LoadingView from '../view/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import newEventFormButtonView from '../view/new-event-form-button-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -21,6 +22,8 @@ export default class BoardPresenter {
 
   #tripListComponent = new TripListView();
   #loadingComponent = new LoadingView();
+  #newEventBtnComponent;
+  #infoHeaderContainer;
 
   #sortingComponent;
   #noTripComponent;
@@ -33,15 +36,17 @@ export default class BoardPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
+  // #onNewEventDestroy;
 
-  constructor({tripListContainer, tripsModel, filterModel, onNewEventDestroy}) {
+  constructor({tripListContainer, tripsModel, filterModel, infoHeaderElement}) {
     this.#tripListContainer = tripListContainer;
     this.#tripsModel = tripsModel;
     this.#filterModel = filterModel;
+    this.#infoHeaderContainer = infoHeaderElement;
     this.#tripsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    this.#newEventFormPresenter = new NewEventFormPresenter({tripListContainer: this.#tripListComponent, onDataChange: this.#handleViewAction, onDestroy: onNewEventDestroy});
+    this.#newEventFormPresenter = new NewEventFormPresenter({tripListContainer: this.#tripListComponent, onDataChange: this.#handleViewAction, onDestroy: this.#handleEventDestroy});
   }
 
   createTrip() {
@@ -75,7 +80,22 @@ export default class BoardPresenter {
 
   init() {
     this.#renderBoard();
+    // this.#renderNewEventButton();
   }
+
+  #renderNewEventButton() {
+    this.#newEventBtnComponent = new newEventFormButtonView({onClick: this.#handleNewEventButtonClick});
+    render(this.#newEventBtnComponent, this.#infoHeaderContainer, RenderPosition.BEFOREEND);
+  }
+
+  #handleNewEventButtonClick = () => {
+    this.createTrip();
+    this.#newEventBtnComponent.element.disabled = true;
+  };
+
+  #handleEventDestroy = () => {
+    this.#newEventBtnComponent.element.disabled = false;
+  };
 
   #renderBoard() {
     render(this.#tripListComponent, this.#tripListContainer);
@@ -205,7 +225,13 @@ export default class BoardPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        this.#renderNewEventButton();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#filterType = 'ERROR';
+        this.#renderNoTrips();
     }
   };
 }
