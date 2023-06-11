@@ -42,9 +42,9 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
 
 function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting) {
   const {id} = trip;
+
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
-
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
   const isSubmitBtnDisabled = !isNameExists || !isPriceExists;
