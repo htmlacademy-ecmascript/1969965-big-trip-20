@@ -1,6 +1,6 @@
-import { render, replace, remove } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
-import { RenderPosition } from '../framework/render.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
+
 export default class TripInfoPresenter {
   #infoContainer;
   #tripsModel;
@@ -25,11 +25,16 @@ export default class TripInfoPresenter {
   }
 
   init() {
-    if(this.destinations.length === 0) {
+    if (this.destinations.length === 0) {
       return;
     }
+
     const prevInfoComponent = this.#tripInfoComponent;
-    this.#tripInfoComponent = new TripInfoView({trips: this.trips, destinations: this.destinations, offers: this.offers});
+    this.#tripInfoComponent = new TripInfoView({
+      trips: this.trips,
+      destinations: this.destinations,
+      offers: this.offers
+    });
 
     if (prevInfoComponent === null) {
       this.#renderTripInfo();
@@ -45,7 +50,6 @@ export default class TripInfoPresenter {
   };
 
   #renderTripInfo() {
-
     if (this.trips.length < 1) {
       return;
     }

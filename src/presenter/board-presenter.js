@@ -1,34 +1,37 @@
-import { RenderPosition, render, remove } from '../framework/render.js';
-import TripListView from '../view/trip-list-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import TripPresenter from './trip-presenter.js';
 import NewEventFormPresenter from './new-event-presenter.js';
+import newEventFormButtonView from '../view/new-event-form-button-view.js';
+import LoadingView from '../view/loading-view.js';
+import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
+import { RenderPosition, render, remove } from '../framework/render.js';
 import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
-import LoadingView from '../view/loading-view.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import newEventFormButtonView from '../view/new-event-form-button-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
 export default class BoardPresenter {
   #tripListContainer;
+  #infoHeaderContainer;
+
   #tripsModel;
   #filterModel;
 
   #tripListComponent = new TripListView();
   #loadingComponent = new LoadingView();
-  #newEventBtnComponent;
-  #infoHeaderContainer;
-
+  #newEventButtonComponent;
   #sortingComponent;
   #noTripComponent;
+
   #tripPresenters = new Map();
   #newEventFormPresenter;
+
   #currentSortType = SortTypes.DAY;
   #filterType = FilterTypes.EVERYTHING;
   #isLoading = true;
@@ -36,24 +39,26 @@ export default class BoardPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
-  // #onNewEventDestroy;
 
   constructor({tripListContainer, tripsModel, filterModel, infoHeaderElement}) {
     this.#tripListContainer = tripListContainer;
+    this.#infoHeaderContainer = infoHeaderElement;
+
     this.#tripsModel = tripsModel;
     this.#filterModel = filterModel;
-    this.#infoHeaderContainer = infoHeaderElement;
+
     this.#tripsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    this.#newEventFormPresenter = new NewEventFormPresenter({tripListContainer: this.#tripListComponent, onDataChange: this.#handleViewAction, onDestroy: this.#handleEventDestroy});
+    this.#newEventFormPresenter = new NewEventFormPresenter({
+      tripListContainer: this.#tripListComponent,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#handleEventDestroy});
   }
 
   createTrip() {
     this.#currentSortType = SortTypes.DAY;
-
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
-
     this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
   }
 
@@ -80,21 +85,20 @@ export default class BoardPresenter {
 
   init() {
     this.#renderBoard();
-    // this.#renderNewEventButton();
   }
 
   #renderNewEventButton() {
-    this.#newEventBtnComponent = new newEventFormButtonView({onClick: this.#handleNewEventButtonClick});
-    render(this.#newEventBtnComponent, this.#infoHeaderContainer, RenderPosition.BEFOREEND);
+    this.#newEventButtonComponent = new newEventFormButtonView({onClick: this.#handleNewEventButtonClick});
+    render(this.#newEventButtonComponent, this.#infoHeaderContainer, RenderPosition.BEFOREEND);
   }
 
   #handleNewEventButtonClick = () => {
     this.createTrip();
-    this.#newEventBtnComponent.element.disabled = true;
+    this.#newEventButtonComponent.element.disabled = true;
   };
 
   #handleEventDestroy = () => {
-    this.#newEventBtnComponent.element.disabled = false;
+    this.#newEventButtonComponent.element.disabled = false;
   };
 
   #renderBoard() {
@@ -126,10 +130,9 @@ export default class BoardPresenter {
     this.#tripPresenters.clear();
 
     remove(this.#sortingComponent);
-
     remove(this.#loadingComponent);
 
-    if(this.#noTripComponent) {
+    if (this.#noTripComponent) {
       remove(this.#noTripComponent);
     }
 
@@ -166,7 +169,11 @@ export default class BoardPresenter {
   }
 
   #renderTrip(trip, offers, destinations, destinationsList) {
-    const tripPresenter = new TripPresenter({tripContainer: this.#tripListComponent.element, onDataChange: this.#handleViewAction, onModeChange: this.#handleModeChange});
+    const tripPresenter = new TripPresenter({
+      tripContainer: this.#tripListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange});
+
     tripPresenter.init(trip, offers, destinations, destinationsList);
     this.#tripPresenters.set(trip.id, tripPresenter);
   }
@@ -178,6 +185,7 @@ export default class BoardPresenter {
 
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
         this.#tripPresenters.get(update.id).setSaving();
@@ -204,7 +212,6 @@ export default class BoardPresenter {
         }
         break;
     }
-
     this.#uiBlocker.unblock();
   };
 

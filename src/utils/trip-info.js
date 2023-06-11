@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
 import { sortTrips } from './sorting.js';
 import { formatDate } from './common.js';
 import { DateFormats } from '../constants.js';
-import dayjs from 'dayjs';
 
 function getOffersPrices(offers, offersIds) {
   const arr = [];

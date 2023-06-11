@@ -1,12 +1,10 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { turnFirstCharToUppercase } from '../utils/common.js';
-import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate } from '../utils/common.js';
-import { getBlankEventFormData } from '../constants.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
 import he from 'he';
+import { turnFirstCharToUppercase, formatDate } from '../utils/common.js';
+import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
+import { tripTypes, DateFormats, getBlankEventFormData } from '../constants.js';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {
@@ -47,7 +45,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
-  const isSubmitBtnDisabled = !isNameExists || !isPriceExists;
+  const isSubmitButtonDisabled = !isNameExists || !isPriceExists;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -83,9 +81,9 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
        <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required ${isDisabled ? 'disabled' : ''}>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitButtonDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
 
-      ${createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting)}
+      ${createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting)}
     </header>`;
 }
 
@@ -108,12 +106,12 @@ function createDestinationsListTemplate(destinationsList) {
 </datalist>`;
 }
 
-function createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting) {
+function createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting) {
   const deleteCancelButtonText = () => {
-    if(id === '') {
+    if (id === '') {
       return 'Cancel';
     }
-    if(isDeleting) {
+    if (isDeleting) {
       return 'Deleting';
     }
     return 'Delete';
@@ -175,14 +173,14 @@ export default class EventFormView extends AbstractStatefulView {
   #datepickerStart;
   #datepickerEnd;
 
-  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick, onDeleteClick}) {
+  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpButtonClick, onDeleteClick}) {
     super();
     this.#destinationsList = destinationsList;
     this._setState(EventFormView.parseTripToState(trip));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
-    this.#handleFormClick = onRollUpBtnClick;
+    this.#handleFormClick = onRollUpButtonClick;
     this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
@@ -221,7 +219,7 @@ export default class EventFormView extends AbstractStatefulView {
   };
 
   _restoreHandlers() {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
@@ -231,7 +229,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.#setDatepicker();
   }
 
-  #rollUpBtnHandler = (evt) => {
+  #rollUpButtonHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormClick();
   };

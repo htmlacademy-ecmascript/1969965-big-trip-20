@@ -1,5 +1,5 @@
-import { FilterTypes } from '../constants.js';
 import dayjs from 'dayjs';
+import { FilterTypes } from '../constants.js';
 
 const filter = {
   [FilterTypes.EVERYTHING]: (trips) => trips.filter((trip) => trip),

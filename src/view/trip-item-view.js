@@ -1,6 +1,6 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, findDifference, formatDifference } from '../utils/common.js';
-import { DateFormats, FavoriteBtnStateClasses } from '../constants.js';
+import { DateFormats, FavoriteButtonStateClasses } from '../constants.js';
 import { getCurrentDestination, getOffers } from '../utils/trip.js';
 
 function createTripOffersTemplate(offers) {
@@ -21,8 +21,8 @@ function createTripItemTemplate(trip, off, destinations) {
   const offersTemplate = createTripOffersTemplate(getOffers(tripOffers, offers));
 
   const favoriteClassName = isFavorite
-    ? FavoriteBtnStateClasses.ACTIVE
-    : FavoriteBtnStateClasses.INACTIVE;
+    ? FavoriteButtonStateClasses.ACTIVE
+    : FavoriteButtonStateClasses.INACTIVE;
 
   return `<li class="trip-events__item">
   <div class="event">

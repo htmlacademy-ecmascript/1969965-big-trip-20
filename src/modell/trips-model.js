@@ -1,5 +1,6 @@
-import { UpdateType } from '../constants.js';
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../constants.js';
+
 export default class TripsModel extends Observable {
   #tripsApiService;
   #trips = [];
@@ -50,14 +51,16 @@ export default class TripsModel extends Observable {
   async updateTrip(updateType, update) {
     const index = this.#trips.findIndex((trip) => trip.id === update.id);
 
-    if(index === -1) {
+    if (index === -1) {
       throw new Error('Can\'t update unexisting trip');
     }
 
     try {
       const response = await this.#tripsApiService.updateTrip(update);
       const updatedTrip = this.#adaptTripToClient(response);
+
       this.#trips = [...this.#trips.slice(0, index), updatedTrip, ...this.#trips.slice(index + 1)];
+
       this._notify(updateType, updatedTrip);
     } catch(err) {
       throw new Error('Can\'t update trip');
@@ -68,10 +71,12 @@ export default class TripsModel extends Observable {
     try {
       const response = await this.#tripsApiService.addTrip(update);
       const newTrip = this.#adaptTripToClient(response);
+
       this.#trips = [
         newTrip,
         ...this.#trips,
       ];
+
       this._notify(updateType, newTrip);
     } catch(err) {
       throw new Error('Can\'t add task');
@@ -87,6 +92,7 @@ export default class TripsModel extends Observable {
 
     try {
       await this.#tripsApiService.deleteTrip(update);
+
       this.#trips = [
         ...this.#trips.slice(0, index),
         ...this.#trips.slice(index + 1),
@@ -96,8 +102,6 @@ export default class TripsModel extends Observable {
     } catch(err) {
       throw new Error('Can\'t delete task');
     }
-
-
   }
 
   #adaptTripToClient(trip) {

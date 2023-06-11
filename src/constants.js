@@ -10,29 +10,10 @@ const DateFormats = {
   DAY: 'D'
 };
 
-const TRIP_COUNT = 4;
-
-const FavoriteBtnStateClasses = {
+const FavoriteButtonStateClasses = {
   ACTIVE: 'event__favorite-btn event__favorite-btn--active',
   INACTIVE: 'event__favorite-btn'
 };
-
-const RANDOM_NUM_RANGE = 300;
-
-const BLANK_EVENT_FORM_DATA = {
-  id: '',
-  destination: '',
-  type: 'taxi',
-  price: '',
-  timeStart: '',
-  timeEnd: '',
-  isFavorite: false,
-  offers: []
-};
-
-function getBlankEventFormData() {
-  return BLANK_EVENT_FORM_DATA;
-}
 
 const FilterTypes = {
   EVERYTHING: 'everything',
@@ -63,4 +44,19 @@ const UpdateType = {
   ERROR: 'ERROR'
 };
 
-export { tripTypes, DateFormats, TRIP_COUNT, FavoriteBtnStateClasses, RANDOM_NUM_RANGE, getBlankEventFormData, FilterTypes, SortTypes, UpdateType, UserAction };
+const BLANK_EVENT_FORM_DATA = {
+  id: '',
+  destination: '',
+  type: 'taxi',
+  price: '',
+  timeStart: '',
+  timeEnd: '',
+  isFavorite: false,
+  offers: []
+};
+
+function getBlankEventFormData() {
+  return BLANK_EVENT_FORM_DATA;
+}
+
+export { tripTypes, DateFormats, FavoriteButtonStateClasses, getBlankEventFormData, FilterTypes, SortTypes, UpdateType, UserAction };

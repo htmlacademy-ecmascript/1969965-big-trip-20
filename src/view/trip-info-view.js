@@ -1,16 +1,18 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getTotalPrice, getDatesTrack, getDestinationsTrack } from '../utils/trip-info.js';
+
+const MAX_TRIPS_COUNT = 3;
 
 function createDestinationsTrackTemplate(trips, destinations) {
   const destinationsTrack = getDestinationsTrack(trips, destinations);
 
-  if (destinationsTrack.length <= 3) {
+  if (destinationsTrack.length <= MAX_TRIPS_COUNT) {
     const array = destinationsTrack.slice(0, destinationsTrack.length - 1);
     return `<h1 class="trip-info__title">
     ${array.map((elem) => `${elem} &mdash; `).join('')}${destinationsTrack[destinationsTrack.length - 1]}</h1>`;
   }
 
-  if (destinationsTrack.length > 3) {
+  if (destinationsTrack.length > MAX_TRIPS_COUNT) {
     const array2 = destinationsTrack.slice(0, 1);
 
     return `<h1 class="trip-info__title">

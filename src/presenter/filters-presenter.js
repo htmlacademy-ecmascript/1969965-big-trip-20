@@ -33,19 +33,22 @@ export default class FiltersPresenter {
   }
 
   init() {
-    if(this.destinations.length === 0 && this.trips.length === 0 && this.offers.length === 0) {
+    if (this.destinations.length === 0 && this.trips.length === 0 && this.offers.length === 0) {
       return;
     }
 
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;
-    this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: this.#filterModel.filter, onFilterTypeChange: this.#handleFilterTypeChange});
+    this.#filtersContainerComponent = new FilterContainerView({
+      filters,
+      currentFilterType: this.#filterModel.filter,
+      onFilterTypeChange: this.#handleFilterTypeChange
+    });
 
     if (prevFilterComponent === null) {
       this.#renderFilters();
       return;
     }
-
     replace(this.#filtersContainerComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
@@ -59,7 +62,7 @@ export default class FiltersPresenter {
   };
 
   #handleFilterTypeChange = (filterType) => {
-    if(this.#filterModel.filter === filterType) {
+    if (this.#filterModel.filter === filterType) {
       return;
     }
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
