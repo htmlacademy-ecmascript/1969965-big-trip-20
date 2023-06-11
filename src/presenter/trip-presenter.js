@@ -89,8 +89,8 @@ export default class TripPresenter {
   }
 
   setAborting() {
-    if(this.#mode === Mode.EDITING) {
-      this.#tripComponent.sahke();
+    if(this.#mode === Mode.DEFAULT) {
+      this.#tripComponent.shake();
       return;
     }
     const resetFormState = () => {

@@ -63,7 +63,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''} required>
         ${destinationsListTemplate}
       </div>
 
@@ -111,9 +111,6 @@ function createDestinationsListTemplate(destinationsList) {
 function createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting) {
   const deleteCancelButtonText = () => {
     if(id === '') {
-      // if(isDeleting) {
-      //   return 'Canceling';
-      // }
       return 'Cancel';
     }
     if(isDeleting) {
