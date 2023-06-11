@@ -152,19 +152,31 @@ export default class BoardPresenter {
     this.#tripPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
         this.#tripPresenters.get(update.id).setSaving();
-        this.#tripsModel.updateTrip(updateType, update);
+        try{
+          await this.#tripsModel.updateTrip(updateType, update);
+        } catch(err) {
+          this.#tripPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_TRIP:
         this.#newEventFormPresenter.setSaving();
-        this.#tripsModel.addTrip(updateType, update);
+        try{
+          await this.#tripsModel.addTrip(updateType, update);
+        } catch(err) {
+          this.#newEventFormPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_TRIP:
         this.#tripPresenters.get(update.id).setDeleting();
-        this.#tripsModel.deleteTrip(updateType, update);
+        try {
+          await this.#tripsModel.deleteTrip(updateType, update);
+        } catch(err) {
+          this.#tripPresenters.get(update.id).setAborting();
+        }
         break;
     }
   };

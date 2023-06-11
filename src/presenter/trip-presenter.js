@@ -80,12 +80,28 @@ export default class TripPresenter {
   }
 
   setDeleting() {
-    if (this.#mode === Mode.DEFAULT) {
+    if (this.#mode === Mode.EDITING) {
       this.#eventFormComponent.updateElement({
         isDisabled: true,
         isDeleting: true,
       });
     }
+  }
+
+  setAborting() {
+    if(this.#mode === Mode.EDITING) {
+      this.#tripComponent.sahke();
+      return;
+    }
+    const resetFormState = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#eventFormComponent.shake(resetFormState);
   }
 
   #replaceTripToForm() {

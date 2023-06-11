@@ -53,6 +53,16 @@ export default class NewEventFormPresenter {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+    this.#eventFormComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (trip) => {
     this.#handleDataChange(
       UserAction.ADD_TRIP,
