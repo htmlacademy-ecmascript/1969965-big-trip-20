@@ -68,7 +68,6 @@ export default class NewEventFormPresenter {
       UserAction.ADD_TRIP,
       UpdateType.MINOR,
       trip);
-    // this.destroy();
   };
 
   #handleCancelClick = () => {

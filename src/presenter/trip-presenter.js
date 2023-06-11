@@ -89,10 +89,6 @@ export default class TripPresenter {
   }
 
   setAborting() {
-    if(this.#mode === Mode.DEFAULT) {
-      this.#tripComponent.shake();
-      return;
-    }
     const resetFormState = () => {
       this.#eventFormComponent.updateElement({
         isDisabled: false,

@@ -8,6 +8,12 @@ import { sortTrips } from '../utils/sorting.js';
 import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
 import LoadingView from '../view/loading-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 export default class BoardPresenter {
   #tripListContainer;
   #tripsModel;
@@ -23,6 +29,10 @@ export default class BoardPresenter {
   #currentSortType = SortTypes.DAY;
   #filterType = FilterTypes.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({tripListContainer, tripsModel, filterModel, onNewEventDestroy}) {
     this.#tripListContainer = tripListContainer;
@@ -153,6 +163,7 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
         this.#tripPresenters.get(update.id).setSaving();
@@ -179,6 +190,8 @@ export default class BoardPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
