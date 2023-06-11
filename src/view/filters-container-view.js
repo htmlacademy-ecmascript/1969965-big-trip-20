@@ -14,7 +14,7 @@ function createFilterItemTemplate(filter) {
 
   return `
   <div class="trip-filters__filter">
-    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}">
+    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === 'everything' ? 'checked' : ''}>
     <label class="trip-filters__filter-label" for="filter-${type}">${turnFirstCharToUppercase(type)}</label>
   </div>`;
 }

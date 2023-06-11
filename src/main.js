@@ -1,6 +1,5 @@
 import FiltersPresenter from './presenter/filters-presenter.js';
-import SortingPanelPresenter from './presenter/sorting-panel-presenter.js';
-import TripListPresenter from './presenter/trip-list-presenter.js';
+import BoardPresenter from './presenter/board-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 
@@ -11,14 +10,12 @@ const mainSectionElement = document.querySelector('.trip-events');
 const tripsModel = new TripsModel();
 
 const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel});
-const sortingPresenter = new SortingPanelPresenter({sortingContainer: mainSectionElement});
-const tripListPresenter = new TripListPresenter({
+const boardPresenter = new BoardPresenter({
   tripListContainer: mainSectionElement,
   tripsModel});
 const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel});
 
 tripInfoPresenter.init();
 filtersPresenter.init();
-sortingPresenter.init();
-tripListPresenter.init();
+boardPresenter.init();
 

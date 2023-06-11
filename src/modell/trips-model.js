@@ -4,6 +4,7 @@ import { getMockDestinations } from '../mock/mock-destinations.js';
 import { TRIP_COUNT } from '../constants.js';
 
 export default class TripsModel {
+
   #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
   #offers = getMockOffers();
   #destinations = getMockDestinations();
