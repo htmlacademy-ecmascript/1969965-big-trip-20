@@ -20,7 +20,6 @@ function createFilterItemTemplate(filter, currentFilterType) {
 
 export default class FilterContainerView extends AbstractView {
   #filters;
-  #destinations;
   #currentFilter;
   #handleFilterTypeChange;
 

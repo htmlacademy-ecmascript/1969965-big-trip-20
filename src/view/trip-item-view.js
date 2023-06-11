@@ -19,6 +19,7 @@ function createTripItemTemplate(trip, off, destinations) {
   const {name} = currentDestination;
   const tripOffers = off.filter((elem) => elem.type === trip.type)[0].offers;
   const offersTemplate = createTripOffersTemplate(getOffers(tripOffers, offers));
+  // console.log(tripOffers);
 
   const favoriteClassName = isFavorite
     ? FavoriteBtnStateClasses.ACTIVE

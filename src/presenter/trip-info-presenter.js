@@ -1,28 +1,45 @@
-import { render } from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
 import { RenderPosition } from '../framework/render.js';
 export default class TripInfoPresenter {
   #infoContainer;
   #tripsModel;
+  #tripInfoComponent = null;
 
   constructor({infoContainer, tripsModel}) {
     this.#infoContainer = infoContainer;
     this.#tripsModel = tripsModel;
+    this.#tripsModel.addObserver(this.#handleModelEvent);
   }
 
   get trips() {
-    const trips = this.#tripsModel.trips;
-    return trips;
+    return this.#tripsModel.trips;
+  }
+
+  get offers() {
+    return this.#tripsModel.offers;
   }
 
   get destinations() {
-    const destinations = this.#tripsModel.destinations;
-    return destinations;
+    return this.#tripsModel.destinations;
   }
 
   init() {
-    this.#renderTripInfo();
+    const prevInfoComponent = this.#tripInfoComponent;
+    this.#tripInfoComponent = new TripInfoView({trips: this.trips, destinations: this.destinations, offers: this.offers});
+
+    if (prevInfoComponent === null) {
+      this.#renderTripInfo();
+      return;
+    }
+
+    replace(this.#tripInfoComponent, prevInfoComponent);
+    remove(prevInfoComponent);
   }
+
+  #handleModelEvent = () => {
+    this.init();
+  };
 
   #renderTripInfo() {
 
@@ -30,6 +47,6 @@ export default class TripInfoPresenter {
       return;
     }
 
-    render(new TripInfoView({trips: this.trips, destinations: this.destinations}), this.#infoContainer, RenderPosition.AFTERBEGIN);
+    render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 }

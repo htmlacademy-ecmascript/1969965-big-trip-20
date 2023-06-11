@@ -7,7 +7,7 @@ function createNewEventButtonTemplate() {
 
 export default class newEventFormButtonView extends AbstractView {
   #handleClick;
-  #destinations;
+  #tripsModel;
 
   constructor({onClick}) {
     super();
@@ -16,7 +16,7 @@ export default class newEventFormButtonView extends AbstractView {
   }
 
   get template() {
-    return createNewEventButtonTemplate(this.#destinations);
+    return createNewEventButtonTemplate();
   }
 
   #clickHandler = (evt) => {

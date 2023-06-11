@@ -89,6 +89,11 @@ export default class TripPresenter {
   }
 
   setAborting() {
+    if(this.#mode === Mode.DEFAULT) {
+      this.#tripComponent.shake();
+      return;
+    }
+
     const resetFormState = () => {
       this.#eventFormComponent.updateElement({
         isDisabled: false,
@@ -145,7 +150,6 @@ export default class TripPresenter {
     const isMinorUpdateBig = isMinorUpdateByEqual || isMinorUpdateByDifference || isMinorUpdateByPrice;
 
     this.#handleDataChange(UserAction.UPDATE_TRIP, isMinorUpdateBig ? UpdateType.MINOR : UpdateType.PATCH, trip, offers, destinations, destinationsList);
-    // this.#replaceFormToTrip();
   };
 
   #handleDeleteClick = (trip, offers, destinations, destinationsList) => {

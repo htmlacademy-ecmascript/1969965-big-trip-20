@@ -17,20 +17,24 @@ const mainSectionElement = document.querySelector('.trip-events');
 
 const tripsModel = new TripsModel({tripsApiService: new TripsApiService(END_POINT, AUTHORIZATION)});
 const filterModel = new FilterModel();
-const newEventFormButtonComponent = new newEventFormButtonView({onClick: handleNewEventButtonClick});
+
+
+const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel, filterModel});
+const boardPresenter = new BoardPresenter({
+  tripListContainer: mainSectionElement,
+  tripsModel, filterModel, onNewEventDestroy: handleNewEventFormClose});
 const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel: tripsModel});
 
 tripsModel.init()
   .finally(() => {
-    render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
     tripInfoPresenter.init();
   });
 
-const filtersPresenter = new FiltersPresenter({filtersContainer: filtersContainerElement, tripsModel, filterModel});
+const newEventFormButtonComponent = new newEventFormButtonView({onClick: handleNewEventButtonClick, tripsModel});
+render(newEventFormButtonComponent, infoHeaderElement, RenderPosition.BEFOREEND);
 
-const boardPresenter = new BoardPresenter({
-  tripListContainer: mainSectionElement,
-  tripsModel, filterModel, onNewEventDestroy: handleNewEventFormClose});
+filtersPresenter.init();
+boardPresenter.init();
 
 function handleNewEventFormClose() {
   newEventFormButtonComponent.element.disabled = false;
@@ -40,6 +44,3 @@ function handleNewEventButtonClick() {
   boardPresenter.createTrip();
   newEventFormButtonComponent.element.disabled = true;
 }
-
-filtersPresenter.init();
-boardPresenter.init();

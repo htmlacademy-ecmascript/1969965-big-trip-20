@@ -85,12 +85,6 @@ export default class BoardPresenter {
       return;
     }
 
-    if (this.destinations. length === 0) {
-      this.#filterType = FilterTypes.ERROR;
-      this.#renderNoTrips();
-      return;
-    }
-
     const trips = this.trips;
     const tripsCount = trips.length;
 

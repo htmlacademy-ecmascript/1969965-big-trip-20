@@ -25,10 +25,18 @@ export default class FiltersPresenter {
   }
 
   get destinations() {
-    return this.#filterModel.destinations;
+    return this.#tripsModel.destinations;
+  }
+
+  get offers() {
+    return this.#tripsModel.offers;
   }
 
   init() {
+    if(this.destinations.length === 0 && this.trips.length === 0 && this.offers.length === 0) {
+      return;
+    }
+
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;
     this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: this.#filterModel.filter, onFilterTypeChange: this.#handleFilterTypeChange});
