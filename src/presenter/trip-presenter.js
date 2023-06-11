@@ -50,7 +50,8 @@ export default class TripPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#eventFormComponent, prevEventFormComponent);
+      replace(this.#tripComponent, prevEventFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevTripComponent);
@@ -66,6 +67,24 @@ export default class TripPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#eventFormComponent.reset(this.#trip);
       this.#replaceFormToTrip();
+    }
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
     }
   }
 
@@ -105,16 +124,16 @@ export default class TripPresenter {
   };
 
   #handleFormSubmit = (trip, offers, destinations, destinationsList) => {
-    const isMinorUpdate = !isDatesEqual(this.#trip.timeStart, trip.timeStart) && !isDatesEqual(this.#trip.timeEnd, trip.timeStart);
+    const isMinorUpdateByEqual = !isDatesEqual(this.#trip.timeStart, trip.timeStart) && !isDatesEqual(this.#trip.timeEnd, trip.timeStart);
 
-    const isMinorUpdate2 = findDifference(this.#trip.timeStart, this.#trip.timeEnd) !== findDifference(trip.timeStart, trip.timeEnd);
+    const isMinorUpdateByDifference = findDifference(this.#trip.timeStart, this.#trip.timeEnd) !== findDifference(trip.timeStart, trip.timeEnd);
 
-    const isMinorUpdate3 = this.#trip.price !== trip.price;
+    const isMinorUpdateByPrice = this.#trip.price !== trip.price;
 
-    const isMinorUpdateBig = isMinorUpdate || isMinorUpdate2 || isMinorUpdate3;
+    const isMinorUpdateBig = isMinorUpdateByEqual || isMinorUpdateByDifference || isMinorUpdateByPrice;
 
     this.#handleDataChange(UserAction.UPDATE_TRIP, isMinorUpdateBig ? UpdateType.MINOR : UpdateType.PATCH, trip, offers, destinations, destinationsList);
-    this.#replaceFormToTrip();
+    // this.#replaceFormToTrip();
   };
 
   #handleDeleteClick = (trip, offers, destinations, destinationsList) => {

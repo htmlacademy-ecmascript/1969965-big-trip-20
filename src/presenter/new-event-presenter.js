@@ -46,9 +46,19 @@ export default class NewEventFormPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#eventFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   #handleFormSubmit = (trip) => {
-    this.#handleDataChange(UserAction.ADD_TRIP, UpdateType.MINOR, trip);
-    this.destroy();
+    this.#handleDataChange(
+      UserAction.ADD_TRIP,
+      UpdateType.MINOR,
+      trip);
+    // this.destroy();
   };
 
   #handleCancelClick = () => {

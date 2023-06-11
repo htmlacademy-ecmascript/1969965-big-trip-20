@@ -111,9 +111,9 @@ function createDestinationsListTemplate(destinationsList) {
 function createDeleteAndRollUpBtnsTemplate(id, isDisabled, isDeleting) {
   const deleteCancelButtonText = () => {
     if(id === '') {
-      if(isDeleting) {
-        return 'Canceling';
-      }
+      // if(isDeleting) {
+      //   return 'Canceling';
+      // }
       return 'Cancel';
     }
     if(isDeleting) {
