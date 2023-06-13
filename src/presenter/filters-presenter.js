@@ -1,4 +1,4 @@
-import FilterContainerView from '../view/filters-container-view.js';
+import FiltersView from '../view/filters-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { UpdateType } from '../constants.js';
 
@@ -39,7 +39,7 @@ export default class FiltersPresenter {
 
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;
-    this.#filtersContainerComponent = new FilterContainerView({
+    this.#filtersContainerComponent = new FiltersView({
       filters,
       currentFilterType: this.#filterModel.filter,
       onFilterTypeChange: this.#handleFilterTypeChange

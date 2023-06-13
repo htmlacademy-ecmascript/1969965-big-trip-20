@@ -18,7 +18,7 @@ function createFilterItemTemplate(filter, currentFilterType) {
   </div>`;
 }
 
-export default class FilterContainerView extends AbstractView {
+export default class FiltersView extends AbstractView {
   #filters;
   #currentFilter;
   #handleFilterTypeChange;

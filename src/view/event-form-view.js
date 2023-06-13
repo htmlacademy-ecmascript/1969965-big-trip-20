@@ -4,7 +4,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import { turnFirstCharToUppercase, formatDate } from '../utils/common.js';
 import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
-import { tripTypes, DateFormats, getBlankEventFormData } from '../constants.js';
+import { tripTypes, DateFormats, BLANK_EVENT_FORM_DATA } from '../constants.js';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {
@@ -173,7 +173,7 @@ export default class EventFormView extends AbstractStatefulView {
   #datepickerStart;
   #datepickerEnd;
 
-  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpButtonClick, onDeleteClick}) {
+  constructor({destinationsList, trip = BLANK_EVENT_FORM_DATA, destinations, offers, onFormSubmit, onRollUpButtonClick, onDeleteClick}) {
     super();
     this.#destinationsList = destinationsList;
     this._setState(EventFormView.parseTripToState(trip));

@@ -55,8 +55,4 @@ const BLANK_EVENT_FORM_DATA = {
   offers: []
 };
 
-function getBlankEventFormData() {
-  return BLANK_EVENT_FORM_DATA;
-}
-
-export { tripTypes, DateFormats, FavoriteButtonStateClasses, getBlankEventFormData, FilterTypes, SortTypes, UpdateType, UserAction };
+export { tripTypes, DateFormats, FavoriteButtonStateClasses, BLANK_EVENT_FORM_DATA, FilterTypes, SortTypes, UpdateType, UserAction };

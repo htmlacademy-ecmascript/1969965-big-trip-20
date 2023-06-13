@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { sortTrips } from './sorting.js';
+import { sortTrips } from './sort-trips.js';
 import { formatDate } from './common.js';
 import { DateFormats } from '../constants.js';
 

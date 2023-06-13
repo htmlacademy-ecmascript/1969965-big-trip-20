@@ -7,7 +7,7 @@ import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { RenderPosition, render, remove } from '../framework/render.js';
-import { sortTrips } from '../utils/sorting.js';
+import { sortTrips } from '../utils/sort-trips.js';
 import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
 import { filter } from '../utils/filter.js';
 
