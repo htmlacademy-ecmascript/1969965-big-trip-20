@@ -2,8 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { turnFirstCharToUppercase } from '../utils/common.js';
 
 function createFiltersContainerTemplate(filterItems, currentFilterType, trips) {
-  const filters = Object.values(filterItems);
-  const filterItemsTemplate = filters.map((filter) => createFilterItemTemplate(filter, currentFilterType, trips)).join('');
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType, trips)).join('');
   return `<form class="trip-filters" action="#" method="get">
             ${filterItemsTemplate}
             <button class="visually-hidden" type="submit">Accept filter</button>

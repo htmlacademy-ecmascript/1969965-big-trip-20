@@ -1,6 +1,6 @@
 const tripTypes = ['taxi', 'bus','train', 'ship', 'drive', 'flight','check-in', 'sightseeing', 'restaurant'];
 
-const DateFormats = {
+const DateFormat = {
   DAY_MONTH : 'MMM D',
   HOUR_MINUTES: 'H:mm',
   YEAR_MONTH_DAY: 'YY-MM-DD',
@@ -10,19 +10,19 @@ const DateFormats = {
   DAY: 'D'
 };
 
-const FavoriteButtonStateClasses = {
+const FavoriteButtonStateClass = {
   ACTIVE: 'event__favorite-btn event__favorite-btn--active',
   INACTIVE: 'event__favorite-btn'
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'everything',
   PAST: 'past',
   PRESENT: 'present',
   FUTURE: 'future',
 };
 
-const SortTypes = {
+const SortType = {
   DAY: 'day',
   EVENT: 'event',
   TIME: 'time',
@@ -55,4 +55,4 @@ const BLANK_EVENT_FORM_DATA = {
   offers: []
 };
 
-export { tripTypes, DateFormats, FavoriteButtonStateClasses, BLANK_EVENT_FORM_DATA, FilterTypes, SortTypes, UpdateType, UserAction };
+export { tripTypes, DateFormat, FavoriteButtonStateClass, BLANK_EVENT_FORM_DATA, FilterType, SortType, UpdateType, UserAction };

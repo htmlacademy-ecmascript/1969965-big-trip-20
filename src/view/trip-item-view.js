@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, findDifference, formatDifference } from '../utils/common.js';
-import { DateFormats, FavoriteButtonStateClasses } from '../constants.js';
+import { DateFormat, FavoriteButtonStateClass } from '../constants.js';
 import { getCurrentDestination, getOffers } from '../utils/trip.js';
 
 function createTripOffersTemplate(offers) {
@@ -21,21 +21,21 @@ function createTripItemTemplate(trip, off, destinations) {
   const offersTemplate = createTripOffersTemplate(getOffers(tripOffers, offers));
 
   const favoriteClassName = isFavorite
-    ? FavoriteButtonStateClasses.ACTIVE
-    : FavoriteButtonStateClasses.INACTIVE;
+    ? FavoriteButtonStateClass.ACTIVE
+    : FavoriteButtonStateClass.INACTIVE;
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY)}">${formatDate(timeStart, DateFormats.DAY_MONTH)}</time>
+    <time class="event__date" datetime="${formatDate(timeStart, DateFormat.YEAR_MONTH_DAY)}">${formatDate(timeStart, DateFormat.DAY_MONTH)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormats.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormats.HOUR_MINUTES)}</time>
+        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormat.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormat.HOUR_MINUTES)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${formatDate(timeStart, DateFormats.HOUR_MINUTES)}">${formatDate(timeEnd, DateFormats.HOUR_MINUTES)}</time>
+        <time class="event__end-time" datetime="${formatDate(timeStart, DateFormat.HOUR_MINUTES)}">${formatDate(timeEnd, DateFormat.HOUR_MINUTES)}</time>
       </p>
       <p class="event__duration">${formatDifference(findDifference(timeEnd, timeStart))}</p>
     </div>

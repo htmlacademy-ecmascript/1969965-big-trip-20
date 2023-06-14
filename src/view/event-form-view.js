@@ -4,7 +4,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import { turnFirstCharToUppercase, formatDate } from '../utils/common.js';
 import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
-import { tripTypes, DateFormats, BLANK_EVENT_FORM_DATA } from '../constants.js';
+import { tripTypes, DateFormat, BLANK_EVENT_FORM_DATA } from '../constants.js';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {
@@ -67,10 +67,10 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
        </div>
 
        <div class="event__field-group  event__field-group--price">
@@ -117,9 +117,9 @@ function createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting) {
     return 'Delete';
   };
 
-  const hideButtonClass = 'hidden';
+  const HIDE_BUTTON_CLASS = 'hidden';
   return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${deleteCancelButtonText()}</button>
-    <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
+    <button class="event__rollup-btn ${id === '' ? HIDE_BUTTON_CLASS : ''}" type="button">
     <span class="visually-hidden">Open event</span>
     </button>
     `;

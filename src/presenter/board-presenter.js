@@ -8,7 +8,7 @@ import NoTripView from '../view/no-trip-view.js';
 import SortingView from '../view/sorting-view.js';
 import { RenderPosition, render, remove } from '../framework/render.js';
 import { sortTrips } from '../utils/sort-trips.js';
-import { SortTypes, UpdateType, UserAction, FilterTypes } from '../constants.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../constants.js';
 import { filter } from '../utils/filter.js';
 
 const TimeLimit = {
@@ -32,8 +32,8 @@ export default class BoardPresenter {
   #tripPresenters = new Map();
   #newEventFormPresenter;
 
-  #currentSortType = SortTypes.DAY;
-  #filterType = FilterTypes.EVERYTHING;
+  #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
   #isLoading = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -57,13 +57,13 @@ export default class BoardPresenter {
   }
 
   createTrip() {
-    this.#currentSortType = SortTypes.DAY;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
   }
 
   get trips() {
-    this.#filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.currentFilter;
     const trips = this.#tripsModel.trips;
     const filteredTrips = filter[this.#filterType](trips);
 
@@ -137,7 +137,7 @@ export default class BoardPresenter {
     }
 
     if (resetSortType) {
-      this.#currentSortType = SortTypes.DAY;
+      this.#currentSortType = SortType.DAY;
     }
   }
 

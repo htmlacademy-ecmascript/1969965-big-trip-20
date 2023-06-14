@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { sortTrips } from './sort-trips.js';
 import { formatDate } from './common.js';
-import { DateFormats } from '../constants.js';
+import { DateFormat } from '../constants.js';
 
 function getOffersPrices(offers, offersIds) {
   const arr = [];
@@ -31,12 +31,12 @@ function getTotalOffersPrice(trips, offers) {
 
 function getDatesTrack(trips) {
   const sortedTrips = sortTrips(trips);
-  const startDate = formatDate(sortedTrips[0].timeStart, DateFormats.MONTH_DAY);
+  const startDate = formatDate(sortedTrips[0].timeStart, DateFormat.MONTH_DAY);
   let endDate = null;
   if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.DAY);
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormat.DAY);
   } else {
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.MONTH_DAY);
+    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormat.MONTH_DAY);
   }
 
   return {startDate, endDate};
