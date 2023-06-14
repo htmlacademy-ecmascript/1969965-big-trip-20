@@ -1,24 +1,55 @@
 import FilterContainerView from '../view/filters-container-view.js';
-import { render } from '../framework/render.js';
-import { generateFilter } from '../mock/filter.js';
+import { render, replace, remove } from '../framework/render.js';
+import { UpdateType } from '../constants.js';
 
 export default class FiltersPresenter {
   #filtersContainer;
   #tripsModel;
-  #trips;
-  #filtersContainerComponent;
-  #filters;
+  #filterModel;
+  #filtersContainerComponent = null;
 
-  constructor({filtersContainer, tripsModel}) {
+  constructor({filtersContainer, tripsModel, filterModel}) {
     this.#filtersContainer = filtersContainer;
     this.#tripsModel = tripsModel;
+    this.#filterModel = filterModel;
+    this.#tripsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get trips() {
+    return this.#tripsModel.trips;
+  }
+
+  get filters() {
+    return this.#filterModel.filters;
   }
 
   init() {
-    this.#trips = [...this.#tripsModel.trips];
-    this.#filters = generateFilter(this.#trips);
+    const filters = this.filters;
+    const prevFilterComponent = this.#filtersContainerComponent;
+    this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: this.#filterModel.filter, onFilterTypeChange: this.#handleFilterTypeChange});
 
-    this.#filtersContainerComponent = new FilterContainerView(this.#filters);
+    if (prevFilterComponent === null) {
+      this.#renderFilters();
+      return;
+    }
+
+    replace(this.#filtersContainerComponent, prevFilterComponent);
+    remove(prevFilterComponent);
+  }
+
+  #renderFilters() {
     render(this.#filtersContainerComponent, this.#filtersContainer);
   }
+
+  #handleModelEvent = () => {
+    this.init();
+  };
+
+  #handleFilterTypeChange = (filterType) => {
+    if(this.#filterModel.filter === filterType) {
+      return;
+    }
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  };
 }

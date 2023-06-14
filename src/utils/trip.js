@@ -1,6 +1,4 @@
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
+import dayjs from 'dayjs';
 
 function getCurrentDestination (destination, destinations) {
   const currentDestinationList = destinations.filter((elem) => elem.id === destination);
@@ -40,4 +38,8 @@ function isDestinationCorrect (validDestinations, userDestination) {
   return validDestinations.some((dest) => userDestination === dest.name);
 }
 
-export { updateItem, getCurrentDestination, isItemChecked, getCurrentOffers, getOffers, isDestinationCorrect};
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+}
+
+export { getCurrentDestination, isItemChecked, getCurrentOffers, getOffers, isDestinationCorrect, isDatesEqual };

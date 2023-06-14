@@ -6,11 +6,12 @@ import { getBlankEventFormData } from '../constants.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
+import he from 'he';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip);
   const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
@@ -28,7 +29,8 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip) {
+  const {id} = trip;
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
 
@@ -50,7 +52,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
         ${destinationsListTemplate}
       </div>
 
@@ -67,14 +69,12 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${price}" required>
+       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required>
      </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+
+      ${createDeleteAndRollUpBtnsTemplate(id)}
     </header>`;
 }
 
@@ -95,6 +95,16 @@ function createDestinationsListTemplate(destinationsList) {
   return `<datalist id="destination-list-1">
   ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
 </datalist>`;
+}
+
+function createDeleteAndRollUpBtnsTemplate(id) {
+  const hideButtonClass = 'hidden';
+  return `<button class="event__reset-btn" type="reset">${id === '' ? 'Cancel' : 'Delete'}</button>
+    <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
+    <span class="visually-hidden">Open event</span>
+    </button>
+    `;
+
 }
 
 function createEventFormOfferItemTemplate(offers, trip) {
@@ -141,10 +151,11 @@ export default class EventFormView extends AbstractStatefulView {
   #offers;
   #handleFormSubmit;
   #handleFormClick;
+  #handleDeleteClick;
   #datepickerStart;
   #datepickerEnd;
 
-  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick}) {
+  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick, onDeleteClick}) {
     super();
     this.#destinationsList = destinationsList;
     this._setState(EventFormView.parseTripToState(trip));
@@ -152,6 +163,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onRollUpBtnClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
@@ -195,6 +207,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
     this.#setDatepicker();
   }
 
@@ -206,6 +219,11 @@ export default class EventFormView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(EventFormView.parseStateToTrip(this._state), this.#offers, this.#destinations, this.#destinationsList);
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EventFormView.parseStateToTrip(this._state));
   };
 
   #eventTypeListHandler = (evt) => {
