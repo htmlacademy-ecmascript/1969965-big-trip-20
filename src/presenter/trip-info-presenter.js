@@ -45,10 +45,6 @@ export default class TripInfoPresenter {
     remove(prevInfoComponent);
   }
 
-  #handleModelEvent = () => {
-    this.init();
-  };
-
   #renderTripInfo() {
     if (this.trips.length < 1) {
       return;
@@ -56,4 +52,8 @@ export default class TripInfoPresenter {
 
     render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
+
+  #handleModelEvent = () => {
+    this.init();
+  };
 }

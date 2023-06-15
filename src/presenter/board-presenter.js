@@ -1,6 +1,6 @@
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import TripPresenter from './trip-presenter.js';
-import NewEventFormPresenter from './new-event-presenter.js';
+import NewEventFormPresenter from './new-event-form-presenter.js';
 import newEventFormButtonView from '../view/new-event-form-button-view.js';
 import LoadingView from '../view/loading-view.js';
 import TripListView from '../view/trip-list-view.js';
@@ -56,12 +56,6 @@ export default class BoardPresenter {
       onDestroy: this.#handleEventDestroy});
   }
 
-  createTrip() {
-    this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
-  }
-
   get trips() {
     this.#filterType = this.#filterModel.currentFilter;
     const trips = this.#tripsModel.trips;
@@ -87,19 +81,16 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
+  createTrip() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
+  }
+
   #renderNewEventButton() {
     this.#newEventButtonComponent = new newEventFormButtonView({onClick: this.#handleNewEventButtonClick});
     render(this.#newEventButtonComponent, this.#infoHeaderContainer, RenderPosition.BEFOREEND);
   }
-
-  #handleNewEventButtonClick = () => {
-    this.createTrip();
-    this.#newEventButtonComponent.element.disabled = true;
-  };
-
-  #handleEventDestroy = () => {
-    this.#newEventButtonComponent.element.disabled = false;
-  };
 
   #renderBoard() {
     render(this.#tripListComponent, this.#tripListContainer);
@@ -119,9 +110,36 @@ export default class BoardPresenter {
 
     this.#renderSort();
 
-    for (let i = 0; i < tripsCount; i++) {
-      this.#renderTrip(this.trips[i], this.offers, this.destinations, this.destinationsList);
+    for (const trip of trips) {
+      this.#renderTrip(trip, this.offers, this.destinations, this.destinationsList);
     }
+  }
+
+  #renderNoTrips() {
+    this.#noTripComponent = new NoTripView({filterType: this.#filterType});
+    render(this.#noTripComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderSort() {
+    this.#sortingComponent = new SortingView({
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+    render(this.#sortingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderTrip(trip, offers, destinations, destinationsList) {
+    const tripPresenter = new TripPresenter({
+      tripContainer: this.#tripListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange});
+
+    tripPresenter.init(trip, offers, destinations, destinationsList);
+    this.#tripPresenters.set(trip.id, tripPresenter);
   }
 
   #clearBoard({resetSortType = false} = {}){
@@ -141,18 +159,9 @@ export default class BoardPresenter {
     }
   }
 
-  #renderNoTrips() {
-    this.#noTripComponent = new NoTripView({filterType: this.#filterType});
-    render(this.#noTripComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderSort() {
-    this.#sortingComponent = new SortingView({
-      currentSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange
-    });
-    render(this.#sortingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
-  }
+  #handleEventDestroy = () => {
+    this.#newEventButtonComponent.element.disabled = false;
+  };
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -163,20 +172,6 @@ export default class BoardPresenter {
     this.#clearBoard();
     this.#renderBoard();
   };
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderTrip(trip, offers, destinations, destinationsList) {
-    const tripPresenter = new TripPresenter({
-      tripContainer: this.#tripListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange});
-
-    tripPresenter.init(trip, offers, destinations, destinationsList);
-    this.#tripPresenters.set(trip.id, tripPresenter);
-  }
 
   #handleModeChange = () => {
     this.#newEventFormPresenter.destroy();
@@ -240,6 +235,11 @@ export default class BoardPresenter {
         this.#filterType = 'ERROR';
         this.#renderNoTrips();
     }
+  };
+
+  #handleNewEventButtonClick = () => {
+    this.createTrip();
+    this.#newEventButtonComponent.element.disabled = true;
   };
 }
 

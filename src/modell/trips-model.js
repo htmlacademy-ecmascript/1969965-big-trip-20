@@ -13,6 +13,22 @@ export default class TripsModel extends Observable {
     this.#tripsApiService = tripsApiService;
   }
 
+  get trips() {
+    return this.#trips;
+  }
+
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get destinationsList() {
+    return this.#destinationsList;
+  }
+
   async init() {
     try {
       const trips = await this.#tripsApiService.trips;
@@ -30,22 +46,6 @@ export default class TripsModel extends Observable {
       return;
     }
     this._notify(UpdateType.INIT);
-  }
-
-  get trips() {
-    return this.#trips;
-  }
-
-  get offers() {
-    return this.#offers;
-  }
-
-  get destinations() {
-    return this.#destinations;
-  }
-
-  get destinationsList() {
-    return this.#destinationsList;
   }
 
   async updateTrip(updateType, update) {
