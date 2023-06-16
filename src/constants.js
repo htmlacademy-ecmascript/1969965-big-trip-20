@@ -55,4 +55,10 @@ const BLANK_EVENT_FORM_DATA = {
   offers: []
 };
 
-export { tripTypes, DateFormat, FavoriteButtonStateClass, BLANK_EVENT_FORM_DATA, FilterType, SortType, UpdateType, UserAction };
+const ButtonText = {
+  CANCEL: 'Cancel',
+  DELETING: 'Deleting',
+  DELETE: 'Delete'
+};
+
+export { tripTypes, DateFormat, FavoriteButtonStateClass, BLANK_EVENT_FORM_DATA, FilterType, SortType, UpdateType, UserAction, ButtonText };
