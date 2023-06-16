@@ -4,7 +4,17 @@ import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import { turnFirstCharToUppercase, formatDate } from '../utils/common.js';
 import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
-import { tripTypes, DateFormat, BLANK_EVENT_FORM_DATA } from '../constants.js';
+import { tripTypes, DateFormat, BLANK_EVENT_FORM_DATA, ButtonText } from '../constants.js';
+
+const getButtonText = (tripId, deletingStatus) => {
+  if (tripId === '') {
+    return ButtonText.CANCEL;
+  }
+  if (deletingStatus) {
+    return ButtonText.DELETING;
+  }
+  return ButtonText.DELETE;
+};
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
   const {
@@ -107,18 +117,9 @@ function createDestinationsListTemplate(destinationsList) {
 }
 
 function createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting) {
-  const deleteCancelButtonText = () => {
-    if (id === '') {
-      return 'Cancel';
-    }
-    if (isDeleting) {
-      return 'Deleting';
-    }
-    return 'Delete';
-  };
 
   const HIDE_BUTTON_CLASS = 'hidden';
-  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${deleteCancelButtonText()}</button>
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getButtonText(id, isDeleting)}</button>
     <button class="event__rollup-btn ${id === '' ? HIDE_BUTTON_CLASS : ''}" type="button">
     <span class="visually-hidden">Open event</span>
     </button>
