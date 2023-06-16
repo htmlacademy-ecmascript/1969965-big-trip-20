@@ -1,6 +1,5 @@
-import { remove, render, RenderPosition } from '../framework/render.js';
 import EventFormView from '../view/event-form-view.js';
-import { nanoid } from 'nanoid';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import { UserAction, UpdateType } from '../constants.js';
 
 export default class NewEventFormPresenter {
@@ -27,8 +26,13 @@ export default class NewEventFormPresenter {
       return;
     }
 
-    this.#eventFormComponent = new EventFormView({offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onFormSubmit: this.#handleFormSubmit, onDeleteClick: this.#handleCancelClick});
-
+    this.#eventFormComponent = new EventFormView({
+      offers: this.#offers,
+      destinations: this.#destinations,
+      destinationsList: this.#destinationsList,
+      onFormSubmit: this.#handleFormSubmit,
+      onDeleteClick: this.#handleCancelClick
+    });
     render(this.#eventFormComponent, this.#tripListContainer.element, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -40,16 +44,33 @@ export default class NewEventFormPresenter {
     }
 
     this.#handleDestroy();
-
     remove(this.#eventFormComponent);
     this.#eventFormComponent = null;
-
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#eventFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+    this.#eventFormComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (trip) => {
-    this.#handleDataChange(UserAction.ADD_TRIP, UpdateType.MINOR, {...trip, id: nanoid()});
-    this.destroy();
+    this.#handleDataChange(
+      UserAction.ADD_TRIP,
+      UpdateType.MINOR,
+      trip);
   };
 
   #handleCancelClick = () => {

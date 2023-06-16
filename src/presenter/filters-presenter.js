@@ -1,4 +1,4 @@
-import FilterContainerView from '../view/filters-container-view.js';
+import FiltersView from '../view/filters-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { UpdateType } from '../constants.js';
 
@@ -24,16 +24,31 @@ export default class FiltersPresenter {
     return this.#filterModel.filters;
   }
 
+  get destinations() {
+    return this.#tripsModel.destinations;
+  }
+
+  get offers() {
+    return this.#tripsModel.offers;
+  }
+
   init() {
+    if (this.destinations.length === 0 && this.trips.length === 0 && this.offers.length === 0) {
+      return;
+    }
+
     const filters = this.filters;
     const prevFilterComponent = this.#filtersContainerComponent;
-    this.#filtersContainerComponent = new FilterContainerView({filters, currentFilterType: this.#filterModel.filter, onFilterTypeChange: this.#handleFilterTypeChange});
+    this.#filtersContainerComponent = new FiltersView({
+      filters,
+      currentFilterType: this.#filterModel.currentFilter,
+      onFilterTypeChange: this.#handleFilterTypeChange
+    });
 
     if (prevFilterComponent === null) {
       this.#renderFilters();
       return;
     }
-
     replace(this.#filtersContainerComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
@@ -47,7 +62,7 @@ export default class FiltersPresenter {
   };
 
   #handleFilterTypeChange = (filterType) => {
-    if(this.#filterModel.filter === filterType) {
+    if (this.#filterModel.filter === filterType) {
       return;
     }
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);

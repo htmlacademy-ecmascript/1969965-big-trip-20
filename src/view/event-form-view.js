@@ -1,18 +1,27 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { turnFirstCharToUppercase } from '../utils/common.js';
-import { tripTypes, DateFormats } from '../constants.js';
-import { formatDate } from '../utils/common.js';
-import { getBlankEventFormData } from '../constants.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
 import he from 'he';
+import { turnFirstCharToUppercase, formatDate } from '../utils/common.js';
+import { getCurrentDestination, isItemChecked, getCurrentOffers, isDestinationCorrect } from '../utils/trip.js';
+import { tripTypes, DateFormat, BLANK_EVENT_FORM_DATA } from '../constants.js';
 
 function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
-  const {destination, timeStart, timeEnd, type, price, isNameExists, isPriceExists} = trip;
+  const {
+    destination,
+    timeStart,
+    timeEnd,
+    type,
+    price,
+    isNameExists,
+    isPriceExists,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip);
-  const offersTemplate = createEventFormOfferItemTemplate(offers, trip);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting);
+  const offersTemplate = createEventFormOfferItemTemplate(offers, trip, isDisabled);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
   return `<li class="trip-events__item">
@@ -29,14 +38,14 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting) {
   const {id} = trip;
+
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
-
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
-  const isSubmitBtnDisabled = !isNameExists || !isPriceExists;
+  const isSubmitButtonDisabled = !isNameExists || !isPriceExists;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -44,7 +53,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
         ${eventTypesTemplate}
       </div>
 
@@ -52,16 +61,16 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
         <label class="event__label  event__type-output" for="event-destination-1">
         ${turnFirstCharToUppercase(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''} required>
         ${destinationsListTemplate}
       </div>
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(timeStart, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormats.DAY_MONTH_YEAR_TIME_SLASHED)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate (timeEnd, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}" ${isDisabled ? 'disabled' : ''}>
        </div>
 
        <div class="event__field-group  event__field-group--price">
@@ -69,12 +78,12 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
          <span class="visually-hidden">Price</span>
          &euro;
        </label>
-       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required>
+       <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required ${isDisabled ? 'disabled' : ''}>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitBtnDisabled ? 'disabled' : ''}>Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitButtonDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
 
-      ${createDeleteAndRollUpBtnsTemplate(id)}
+      ${createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting)}
     </header>`;
 }
 
@@ -97,23 +106,33 @@ function createDestinationsListTemplate(destinationsList) {
 </datalist>`;
 }
 
-function createDeleteAndRollUpBtnsTemplate(id) {
-  const hideButtonClass = 'hidden';
-  return `<button class="event__reset-btn" type="reset">${id === '' ? 'Cancel' : 'Delete'}</button>
-    <button class="event__rollup-btn ${id === '' ? hideButtonClass : ''}" type="button">
+function createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting) {
+  const deleteCancelButtonText = () => {
+    if (id === '') {
+      return 'Cancel';
+    }
+    if (isDeleting) {
+      return 'Deleting';
+    }
+    return 'Delete';
+  };
+
+  const HIDE_BUTTON_CLASS = 'hidden';
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${deleteCancelButtonText()}</button>
+    <button class="event__rollup-btn ${id === '' ? HIDE_BUTTON_CLASS : ''}" type="button">
     <span class="visually-hidden">Open event</span>
     </button>
     `;
 
 }
 
-function createEventFormOfferItemTemplate(offers, trip) {
+function createEventFormOfferItemTemplate(offers, trip, isDisabled) {
   const currentOffers = getCurrentOffers(offers, trip);
   const chosenOffers = trip.offers;
 
   return `<div class="event__available-offers">
     ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)}>
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
   <label class="event__offer-label" for="event-offer-${id}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -144,7 +163,6 @@ function createEventFormDestinationPictureTemplate(destination, destinations) {
             alt="${description}"></img>`).join('')}</div>
           </div>`;
 }
-
 export default class EventFormView extends AbstractStatefulView {
   #destinationsList;
   #destinations;
@@ -155,16 +173,31 @@ export default class EventFormView extends AbstractStatefulView {
   #datepickerStart;
   #datepickerEnd;
 
-  constructor({destinationsList, trip = getBlankEventFormData(), destinations, offers, onFormSubmit, onRollUpBtnClick, onDeleteClick}) {
+  constructor({destinationsList, trip = BLANK_EVENT_FORM_DATA, destinations, offers, onFormSubmit, onRollUpButtonClick, onDeleteClick}) {
     super();
     this.#destinationsList = destinationsList;
     this._setState(EventFormView.parseTripToState(trip));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
-    this.#handleFormClick = onRollUpBtnClick;
+    this.#handleFormClick = onRollUpButtonClick;
     this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
+  }
+
+  get template() {
+    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
+    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+    this.#setDatepicker();
   }
 
   removeElement() {
@@ -178,13 +211,32 @@ export default class EventFormView extends AbstractStatefulView {
     }
   }
 
-  get template() {
-    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
-  }
-
   reset(trip) {
     this.updateElement(
       EventFormView.parseTripToState(trip),
+    );
+  }
+
+  #setDatepicker() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        defaultDate: this._state.timeStart,
+        onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        dateFormat: 'd-m-Y H:i',
+      },
+    );
+
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        defaultDate: this._state.timeEnd,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        dateFormat: 'd-m-Y H:i',
+        minDate: this.element.querySelector('#event-start-time-1').value
+      },
     );
   }
 
@@ -200,18 +252,7 @@ export default class EventFormView extends AbstractStatefulView {
     });
   };
 
-  _restoreHandlers() {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpBtnHandler);
-    this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
-    this.#setDatepicker();
-  }
-
-  #rollUpBtnHandler = (evt) => {
+  #rollUpButtonHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormClick();
   };
@@ -238,7 +279,7 @@ export default class EventFormView extends AbstractStatefulView {
     const checkElements = this.element.querySelectorAll('.event__offer-checkbox');
     if (evt.target.matches('.event__offer-checkbox')) {
       const offers = [];
-      checkElements.forEach((offer) => offer.checked ? offers.push(Number(offer.id.slice(12))) : '');
+      checkElements.forEach((offer) => offer.checked ? offers.push(offer.id.slice(12)) : '');
       this._setState({
         offers: offers,
       });
@@ -269,37 +310,23 @@ export default class EventFormView extends AbstractStatefulView {
     });
   };
 
-  #setDatepicker() {
-    this.#datepickerStart = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
-      {
-        defaultDate: this._state.timeStart,
-        onChange: this.#startDateChangeHandler,
-        enableTime: true,
-        dateFormat: 'd-m-Y H:i',
-      },
-    );
-
-    this.#datepickerEnd = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
-      {
-        defaultDate: this._state.timeEnd,
-        onChange: this.#endDateChangeHandler,
-        enableTime: true,
-        dateFormat: 'd-m-Y H:i',
-        minDate: this.element.querySelector('#event-start-time-1').value
-      },
-    );
-  }
-
   static parseTripToState(trip) {
-    return {...trip, isNameExists: trip.destination !== '', isPriceExists: trip.price !== ''};
+    return {...trip,
+      isNameExists: trip.destination !== '',
+      isPriceExists: trip.price !== '',
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToTrip(state) {
     const trip = {...state};
     delete trip.isNameExists;
     delete trip.isPriceExists;
+    delete trip.isDisabled;
+    delete trip.isSaving;
+    delete trip.isDeleting;
     return trip;
   }
 }

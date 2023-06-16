@@ -1,14 +1,17 @@
-import { getRandomTrip } from '../mock/mock-trips.js';
-import { getMockOffers } from '../mock/mock-offers.js';
-import { getMockDestinations } from '../mock/mock-destinations.js';
-import { TRIP_COUNT } from '../constants.js';
 import Observable from '../framework/observable.js';
-export default class TripsModel extends Observable {
+import { UpdateType } from '../constants.js';
 
-  #trips = Array.from({length: TRIP_COUNT}, getRandomTrip);
-  #offers = getMockOffers();
-  #destinations = getMockDestinations();
-  #destinationsList = this.#destinations.map(({name}) => name);
+export default class TripsModel extends Observable {
+  #tripsApiService;
+  #trips = [];
+  #offers = [];
+  #destinations = [];
+  #destinationsList = [];
+
+  constructor({tripsApiService}) {
+    super();
+    this.#tripsApiService = tripsApiService;
+  }
 
   get trips() {
     return this.#trips;
@@ -26,39 +29,104 @@ export default class TripsModel extends Observable {
     return this.#destinationsList;
   }
 
-  updateTrip(updateType, update) {
+  async init() {
+    try {
+      const trips = await this.#tripsApiService.trips;
+      const offers = await this.#tripsApiService.offers;
+      const destinations = await this.#tripsApiService.destinations;
+      this.#trips = trips.map(this.#adaptTripToClient);
+      this.#offers = offers;
+      this.#destinations = destinations.map(this.#adaptDestinationToClient);
+      this.#destinationsList = this.#destinations.map(({name}) => name);
+    } catch(err) {
+      this.#trips = [];
+      this.#destinations = [];
+      this.#offers = [];
+      this._notify(UpdateType.ERROR);
+      return;
+    }
+    this._notify(UpdateType.INIT);
+  }
+
+  async updateTrip(updateType, update) {
     const index = this.#trips.findIndex((trip) => trip.id === update.id);
 
-    if(index === -1) {
+    if (index === -1) {
       throw new Error('Can\'t update unexisting trip');
     }
 
-    this.#trips = [...this.#trips.slice(0, index), update, ...this.#trips.slice(index + 1)];
+    try {
+      const response = await this.#tripsApiService.updateTrip(update);
+      const updatedTrip = this.#adaptTripToClient(response);
 
-    this._notify(updateType, update);
+      this.#trips = [...this.#trips.slice(0, index), updatedTrip, ...this.#trips.slice(index + 1)];
+
+      this._notify(updateType, updatedTrip);
+    } catch(err) {
+      throw new Error('Can\'t update trip');
+    }
   }
 
-  addTrip(updateType, update) {
-    this.#trips = [
-      update,
-      ...this.#trips,
-    ];
+  async addTrip(updateType, update) {
+    try {
+      const response = await this.#tripsApiService.addTrip(update);
+      const newTrip = this.#adaptTripToClient(response);
 
-    this._notify(updateType, update);
+      this.#trips = [
+        newTrip,
+        ...this.#trips,
+      ];
+
+      this._notify(updateType, newTrip);
+    } catch(err) {
+      throw new Error('Can\'t add task');
+    }
   }
 
-  deleteTrip(updateType, update) {
+  async deleteTrip(updateType, update) {
     const index = this.#trips.findIndex((trip) => trip.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting trip');
     }
 
-    this.#trips = [
-      ...this.#trips.slice(0, index),
-      ...this.#trips.slice(index + 1),
-    ];
+    try {
+      await this.#tripsApiService.deleteTrip(update);
 
-    this._notify(updateType);
+      this.#trips = [
+        ...this.#trips.slice(0, index),
+        ...this.#trips.slice(index + 1),
+      ];
+
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete task');
+    }
+  }
+
+  #adaptTripToClient(trip) {
+    const adaptedTrip = {...trip,
+      price: trip['base_price'],
+      timeStart: trip['date_from'],
+      timeEnd: trip['date_to'],
+      isFavorite: trip['is_favorite']
+    };
+
+    delete adaptedTrip['base_price'];
+    delete adaptedTrip['date_from'];
+    delete adaptedTrip['date_to'];
+    delete adaptedTrip['is_favorite'];
+
+    return adaptedTrip;
+  }
+
+  #adaptDestinationToClient(destination) {
+    const adaptedDestination = {...destination,
+      images: destination['pictures']
+    };
+
+    delete adaptedDestination['pictures'];
+
+    return adaptedDestination;
   }
 }

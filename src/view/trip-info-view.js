@@ -1,47 +1,18 @@
-import AbstractView from '../framework/view/abstract-view';
-import dayjs from 'dayjs';
-import { DateFormats } from '../constants.js';
-import { formatDate } from '../utils/common.js';
-import { sortTrips } from '../utils/sorting.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { getTotalPrice, getDatesTrack, getDestinationsTrack } from '../utils/trip-info.js';
 
-function getTotalPrice(trips) {
-  const total = trips.reduce((acc, elem) => acc + Number(elem.price), 0);
-  return total;
-}
-
-function getDatesTrack(trips) {
-  const sortedTrips = sortTrips(trips);
-  const startDate = formatDate(sortedTrips[0].timeStart, DateFormats.MONTH_DAY);
-  let endDate = null;
-  if (dayjs(sortedTrips[0].timeStart).month() === dayjs(sortedTrips[sortedTrips.length - 1].timeEnd).month()){
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.DAY);
-  } else {
-    endDate = formatDate(sortedTrips[sortedTrips.length - 1].timeEnd, DateFormats.MONTH_DAY);
-  }
-
-  return {startDate, endDate};
-}
-
-function getDestinationsTrack(trips, destinations) {
-  const sortedTrips = sortTrips(trips);
-  const tripsDestinationsIds = sortedTrips.map(({destination}) => destination);
-  const tripsDestinationsNames = [];
-  tripsDestinationsIds.forEach((elem) => {
-    destinations.forEach((item) => elem === item.id ? tripsDestinationsNames.push(item.name) : '');
-  });
-  return tripsDestinationsNames;
-}
+const MAX_TRIPS_COUNT = 3;
 
 function createDestinationsTrackTemplate(trips, destinations) {
   const destinationsTrack = getDestinationsTrack(trips, destinations);
 
-  if (destinationsTrack.length <= 3) {
+  if (destinationsTrack.length <= MAX_TRIPS_COUNT) {
     const array = destinationsTrack.slice(0, destinationsTrack.length - 1);
     return `<h1 class="trip-info__title">
     ${array.map((elem) => `${elem} &mdash; `).join('')}${destinationsTrack[destinationsTrack.length - 1]}</h1>`;
   }
 
-  if (destinationsTrack.length > 3) {
+  if (destinationsTrack.length > MAX_TRIPS_COUNT) {
     const array2 = destinationsTrack.slice(0, 1);
 
     return `<h1 class="trip-info__title">
@@ -49,8 +20,8 @@ function createDestinationsTrackTemplate(trips, destinations) {
   }
 }
 
-function createTripInfoTemplate(trips, destinations) {
-  const total = getTotalPrice(trips);
+function createTripInfoTemplate(trips, offers, destinations) {
+  const total = getTotalPrice(trips, offers);
   const destinationsTrack = createDestinationsTrackTemplate(trips, destinations);
   const {startDate, endDate} = getDatesTrack(trips);
 
@@ -69,14 +40,17 @@ function createTripInfoTemplate(trips, destinations) {
 export default class TripInfoView extends AbstractView {
   #trips;
   #destinations;
-  constructor({trips, destinations}) {
+  #offers;
+
+  constructor({trips, offers, destinations}) {
     super();
     this.#trips = trips;
+    this.#offers = offers;
     this.#destinations = destinations;
   }
 
   get template() {
-    return createTripInfoTemplate(this.#trips, this.#destinations);
+    return createTripInfoTemplate(this.#trips, this.#offers, this.#destinations);
   }
 }
 

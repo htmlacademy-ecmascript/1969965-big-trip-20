@@ -1,6 +1,6 @@
-import { render, replace, remove } from '../framework/render.js';
 import TripItemView from '../view/trip-item-view.js';
 import EventFormView from '../view/event-form-view.js';
+import { render, replace, remove } from '../framework/render.js';
 import { UserAction, UpdateType } from '../constants.js';
 import { isDatesEqual } from '../utils/trip.js';
 import { findDifference } from '../utils/common.js';
@@ -12,12 +12,15 @@ const Mode = {
 
 export default class TripPresenter {
   #tripContainer;
+
   #tripComponent = null;
   #eventFormComponent = null;
+
   #trip;
   #offers;
   #destinations;
   #destinationsList;
+
   #handleDataChange;
   #handleModeChange;
   #mode = Mode.DEFAULT;
@@ -36,9 +39,23 @@ export default class TripPresenter {
     const prevTripComponent = this.#tripComponent;
     const prevEventFormComponent = this.#eventFormComponent;
 
-    this.#tripComponent = new TripItemView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, onEditClick: this.#handleEditClick, onFavoriteClick: this.#handleFavoriteClick});
+    this.#tripComponent = new TripItemView({
+      trip: this.#trip,
+      offers: this.#offers,
+      destinations: this.#destinations,
+      onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick
+    });
 
-    this.#eventFormComponent = new EventFormView({trip: this.#trip, offers: this.#offers, destinations: this.#destinations, destinationsList: this.#destinationsList, onRollUpBtnClick: this.#handleRollUpBtnClick, onFormSubmit: this.#handleFormSubmit, onDeleteClick: this.#handleDeleteClick});
+    this.#eventFormComponent = new EventFormView({
+      trip: this.#trip,
+      offers: this.#offers,
+      destinations: this.#destinations,
+      destinationsList: this.#destinationsList,
+      onRollUpButtonClick: this.#handleRollUpButtonClick,
+      onFormSubmit: this.#handleFormSubmit,
+      onDeleteClick: this.#handleDeleteClick
+    });
 
     if (prevTripComponent === null || prevEventFormComponent === null) {
       render(this.#tripComponent, this.#tripContainer);
@@ -50,7 +67,8 @@ export default class TripPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#eventFormComponent, prevEventFormComponent);
+      replace(this.#tripComponent, prevEventFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevTripComponent);
@@ -69,6 +87,41 @@ export default class TripPresenter {
     }
   }
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if(this.#mode === Mode.DEFAULT) {
+      this.#tripComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#eventFormComponent.shake(resetFormState);
+  }
+
   #replaceTripToForm() {
     replace(this.#eventFormComponent, this.#tripComponent);
     this.#handleModeChange();
@@ -85,7 +138,7 @@ export default class TripPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #handleRollUpBtnClick = () => {
+  #handleRollUpButtonClick = () => {
     this.#eventFormComponent.reset(this.#trip);
     this.#replaceFormToTrip();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
@@ -105,16 +158,15 @@ export default class TripPresenter {
   };
 
   #handleFormSubmit = (trip, offers, destinations, destinationsList) => {
-    const isMinorUpdate = !isDatesEqual(this.#trip.timeStart, trip.timeStart) && !isDatesEqual(this.#trip.timeEnd, trip.timeStart);
+    const isMinorUpdateByEqual = !isDatesEqual(this.#trip.timeStart, trip.timeStart) && !isDatesEqual(this.#trip.timeEnd, trip.timeStart);
 
-    const isMinorUpdate2 = findDifference(this.#trip.timeStart, this.#trip.timeEnd) !== findDifference(trip.timeStart, trip.timeEnd);
+    const isMinorUpdateByDifference = findDifference(this.#trip.timeStart, this.#trip.timeEnd) !== findDifference(trip.timeStart, trip.timeEnd);
 
-    const isMinorUpdate3 = this.#trip.price !== trip.price;
+    const isMinorUpdateByPrice = this.#trip.price !== trip.price;
 
-    const isMinorUpdateBig = isMinorUpdate || isMinorUpdate2 || isMinorUpdate3;
+    const isMinorUpdateFinally = isMinorUpdateByEqual || isMinorUpdateByDifference || isMinorUpdateByPrice;
 
-    this.#handleDataChange(UserAction.UPDATE_TRIP, isMinorUpdateBig ? UpdateType.MINOR : UpdateType.PATCH, trip, offers, destinations, destinationsList);
-    this.#replaceFormToTrip();
+    this.#handleDataChange(UserAction.UPDATE_TRIP, isMinorUpdateFinally ? UpdateType.MINOR : UpdateType.PATCH, trip, offers, destinations, destinationsList);
   };
 
   #handleDeleteClick = (trip, offers, destinations, destinationsList) => {
