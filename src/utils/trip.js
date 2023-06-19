@@ -23,15 +23,15 @@ function getCurrentOffers (offers, trip) {
 }
 
 function getOffers(tripOffers, offers) {
-  const arr = [];
+  const chosenOffers = [];
   tripOffers.forEach((item) => {
     offers.forEach((elem) => {
       if (item.id === elem) {
-        arr.push(item);
+        chosenOffers.push(item);
       }
     });
   });
-  return arr;
+  return chosenOffers;
 }
 
 function isDestinationCorrect (validDestinations, userDestination) {
