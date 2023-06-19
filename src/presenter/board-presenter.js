@@ -210,7 +210,7 @@ export default class BoardPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType, data = null) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#tripPresenters.get(data.id).init(data, this.offers, this.destinations, this.destinationsList);
