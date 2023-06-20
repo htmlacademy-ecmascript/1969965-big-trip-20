@@ -4,7 +4,6 @@ const DateFormat = {
   DAY_MONTH : 'MMM D',
   HOUR_MINUTES: 'H:mm',
   YEAR_MONTH_DAY: 'YY-MM-DD',
-  YEAR_MONTH_DAY_TIME: 'YYYY-MM-DDTHH:mm',
   DAY_MONTH_YEAR_TIME_SLASHED: 'DD/MM/YY HH:mm',
   MONTH_DAY: 'MMM D',
   DAY: 'D'
@@ -57,7 +56,7 @@ const BLANK_EVENT_FORM_DATA = {
 
 const ButtonText = {
   CANCEL: 'Cancel',
-  DELETING: 'Deleting',
+  DELETING: 'Deleting...',
   DELETE: 'Delete'
 };
 

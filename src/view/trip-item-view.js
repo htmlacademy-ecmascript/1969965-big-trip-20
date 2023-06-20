@@ -33,7 +33,7 @@ function createTripItemTemplate(trip, off, destinations) {
     <h3 class="event__title">${type} ${name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormat.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormat.HOUR_MINUTES)}</time>
+        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}">${formatDate(timeStart, DateFormat.HOUR_MINUTES)}</time>
         &mdash;
         <time class="event__end-time" datetime="${formatDate(timeStart, DateFormat.HOUR_MINUTES)}">${formatDate(timeEnd, DateFormat.HOUR_MINUTES)}</time>
       </p>

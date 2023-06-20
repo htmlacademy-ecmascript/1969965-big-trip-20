@@ -16,7 +16,7 @@ const getButtonText = (tripId, deletingStatus) => {
   return ButtonText.DELETE;
 };
 
-function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, offers) {
+function createEventFormTemplate(eventTypes, destinationsList, trip, destinations, currentOffers) {
   const {
     destination,
     timeStart,
@@ -24,38 +24,36 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
     type,
     price,
     isNameExists,
-    isPriceExists,
+    // isPriceExists,
+    isDateExists,
     isDisabled,
     isSaving,
     isDeleting
   } = trip;
 
-  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting);
-  const offersTemplate = createEventFormOfferItemTemplate(offers, trip, isDisabled);
+  const headerTemplate = createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, trip, isDisabled, isSaving, isDeleting, isDateExists);
+  const offersTemplate = createEventFormOfferItemTemplate(currentOffers, trip, isDisabled);
   const descriptionTemplate = createEventFormDescriptionTemplate(destinations, destination);
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
               ${headerTemplate}
               <section class="event__details">
-                <section class="event__section  event__section--offers">
-                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                  ${offersTemplate}
-                </section>
+                ${currentOffers.offers.length !== 0 ? offersTemplate : ''}
                 ${destination !== '' ? descriptionTemplate : ''}
               </section>
             </form>
          </li>`;
 }
 
-function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, isPriceExists, trip, isDisabled, isSaving, isDeleting) {
+function createEventFormHeaderTemplate(eventTypes, destinationsList, destinations, destination, type, timeEnd, timeStart, price, isNameExists, trip, isDisabled, isSaving, isDeleting, isDateExists) {
   const {id} = trip;
 
   const eventTypesTemplate = createEventTypeItemTemplate(eventTypes);
   const destinationsListTemplate = createDestinationsListTemplate(destinationsList);
   const currentDestination = getCurrentDestination(destination, destinations);
   const {name} = currentDestination;
-  const isSubmitButtonDisabled = !isNameExists || !isPriceExists;
+  const isSubmitButtonDisabled = !isNameExists || !isDateExists;
 
   return `<header class="event__header">
       <div class="event__type-wrapper">
@@ -91,7 +89,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
        <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(price))}" required ${isDisabled ? 'disabled' : ''}>
      </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitButtonDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitButtonDisabled || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
 
       ${createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting)}
     </header>`;
@@ -127,19 +125,26 @@ function createDeleteAndRollUpButtonsTemplate(id, isDisabled, isDeleting) {
 
 }
 
-function createEventFormOfferItemTemplate(offers, trip, isDisabled) {
-  const currentOffers = getCurrentOffers(offers, trip);
+function createEventFormOfferItemTemplate(currentOffers, trip, isDisabled) {
   const chosenOffers = trip.offers;
 
-  return `<div class="event__available-offers">
-    ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
-  <label class="event__offer-label" for="event-offer-${id}">
-    <span class="event__offer-title">${title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${price}</span>
-  </label>
-</div>`).join('')} </div>`;
+  if (currentOffers.length === 0) {
+    return;
+  }
+
+  return `<section class="event__section  event__section--offers">
+            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+            <div class="event__available-offers">
+              ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
+                <label class="event__offer-label" for="event-offer-${id}">
+                <span class="event__offer-title">${title}</span>
+                &plus;&euro;&nbsp;
+                <span class="event__offer-price">${price}</span>
+                </label>
+              </div>`).join('')}
+            </div>
+          </section>`;
 }
 
 function createEventFormDescriptionTemplate(destinations, destination) {
@@ -187,14 +192,20 @@ export default class EventFormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.#offers);
+    return createEventFormTemplate(tripTypes, this.#destinationsList, this._state, this.#destinations, this.currentOffers);
+  }
+
+  get currentOffers() {
+    return getCurrentOffers(this.#offers, this._state);
   }
 
   _restoreHandlers() {
+    if (this.currentOffers.offers.length > 0) {
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
+    }
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerCheckHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
@@ -225,7 +236,7 @@ export default class EventFormView extends AbstractStatefulView {
         defaultDate: this._state.timeStart,
         onChange: this.#startDateChangeHandler,
         enableTime: true,
-        dateFormat: 'd-m-Y H:i',
+        dateFormat: 'd/m/Y H:i',
       },
     );
 
@@ -235,7 +246,7 @@ export default class EventFormView extends AbstractStatefulView {
         defaultDate: this._state.timeEnd,
         onChange: this.#endDateChangeHandler,
         enableTime: true,
-        dateFormat: 'd-m-Y H:i',
+        dateFormat: 'd/m/Y H:i',
         minDate: this.element.querySelector('#event-start-time-1').value
       },
     );
@@ -243,13 +254,16 @@ export default class EventFormView extends AbstractStatefulView {
 
   #startDateChangeHandler = ([userStartDate]) => {
     this.updateElement({
-      timeStart: userStartDate
+      timeStart: userStartDate,
+      timeEnd: '',
+      isDateExists: false
     });
   };
 
   #endDateChangeHandler = ([userEndDate]) => {
     this.updateElement({
-      timeEnd: userEndDate
+      timeEnd: userEndDate,
+      isDateExists: userEndDate !== ''
     });
   };
 
@@ -307,14 +321,15 @@ export default class EventFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       price: evt.target.value,
-      isPriceExists: evt.target.value !== ''
+      // isPriceExists: evt.target.value !== ''
     });
   };
 
   static parseTripToState(trip) {
     return {...trip,
       isNameExists: trip.destination !== '',
-      isPriceExists: trip.price !== '',
+      // isPriceExists: trip.price !== '',
+      isDateExists: trip.timeStart !== '' && trip.timeEnd !== '',
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
@@ -324,7 +339,8 @@ export default class EventFormView extends AbstractStatefulView {
   static parseStateToTrip(state) {
     const trip = {...state};
     delete trip.isNameExists;
-    delete trip.isPriceExists;
+    // delete trip.isPriceExists;
+    delete trip.isDateExists;
     delete trip.isDisabled;
     delete trip.isSaving;
     delete trip.isDeleting;
