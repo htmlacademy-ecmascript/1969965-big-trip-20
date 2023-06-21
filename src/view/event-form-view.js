@@ -24,7 +24,6 @@ function createEventFormTemplate(eventTypes, destinationsList, trip, destination
     type,
     price,
     isNameExists,
-    // isPriceExists,
     isDateExists,
     isDisabled,
     isSaving,
@@ -59,7 +58,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${he.encode(type)}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
         ${eventTypesTemplate}
@@ -67,7 +66,7 @@ function createEventFormHeaderTemplate(eventTypes, destinationsList, destination
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${turnFirstCharToUppercase(type)}
+        ${turnFirstCharToUppercase(he.encode(type))}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''} required>
         ${destinationsListTemplate}
@@ -101,8 +100,8 @@ function createEventTypeItemTemplate(types) {
             <legend class="visually-hidden">Event type</legend>
             ${types.map((type) =>
     `<div class="event__type-item">
-                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-                <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${turnFirstCharToUppercase(type)}</label>
+                <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${he.encode(type)}">
+                <label class="event__type-label  event__type-label--${he.encode(type)}" for="event-type-${he.encode(type)}-1">${turnFirstCharToUppercase(he.encode(type))}</label>
               </div>`).join('')}
             </fieldset>
           </div>`;
@@ -110,7 +109,7 @@ function createEventTypeItemTemplate(types) {
 
 function createDestinationsListTemplate(destinationsList) {
   return `<datalist id="destination-list-1">
-  ${destinationsList.map((elem) => `<option value="${elem}"></option>`).join('')}
+  ${destinationsList.map((elem) => `<option value="${he.encode(elem)}"></option>`).join('')}
 </datalist>`;
 }
 
@@ -136,11 +135,11 @@ function createEventFormOfferItemTemplate(currentOffers, trip, isDisabled) {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
               ${currentOffers.offers.map(({title, price, id}) => `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${trip.type}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
-                <label class="event__offer-label" for="event-offer-${id}">
-                <span class="event__offer-title">${title}</span>
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${he.encode(id)}" type="checkbox" name="event-offer-${he.encode(trip.type)}" ${isItemChecked(id, chosenOffers)} ${isDisabled ? 'disabled' : ''}>
+                <label class="event__offer-label" for="event-offer-${he.encode(id)}">
+                <span class="event__offer-title">${he.encode(title)}</span>
                 &plus;&euro;&nbsp;
-                <span class="event__offer-price">${price}</span>
+                <span class="event__offer-price">${he.encode(String(price))}</span>
                 </label>
               </div>`).join('')}
             </div>
@@ -154,7 +153,7 @@ function createEventFormDescriptionTemplate(destinations, destination) {
 
   return `<section class="event__section  event__section--destination">
            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-           <p class="event__destination-description">${description}</p>
+           <p class="event__destination-description">${he.encode(description)}</p>
             ${descriptionImagesTemplate}
           </section>`;
 }
@@ -165,8 +164,8 @@ function createEventFormDestinationPictureTemplate(destination, destinations) {
 
   return `<div class="event__photos-container">
             <div class="event__photos-tape">
-              ${images.map(({src, description}) => `<img class="event__photo" src="${src}"
-            alt="${description}"></img>`).join('')}</div>
+              ${images.map(({src, description}) => `<img class="event__photo" src="${he.encode(src)}"
+            alt="${he.encode(description)}"></img>`).join('')}</div>
           </div>`;
 }
 export default class EventFormView extends AbstractStatefulView {
@@ -206,6 +205,7 @@ export default class EventFormView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeListHandler);
+    this.element.querySelector('.event__type-toggle').addEventListener('change', this.#eventToggleBtnHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
@@ -282,9 +282,17 @@ export default class EventFormView extends AbstractStatefulView {
     this.#handleDeleteClick(EventFormView.parseStateToTrip(this._state));
   };
 
+  #eventToggleBtnHandler = (evt) => {
+    if(evt.target.checked === false) {
+      this.updateElement({
+        type: this._state.type,
+      });
+    }
+  };
+
   #eventTypeListHandler = (evt) => {
     if (evt.target.matches('.event__type-input')){
-      this.updateElement({
+      this._setState({
         type: evt.target.value,
       });
     }
