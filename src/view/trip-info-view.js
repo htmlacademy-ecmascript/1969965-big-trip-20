@@ -21,6 +21,9 @@ function createDestinationsTrackTemplate(trips, destinations) {
 }
 
 function createTripInfoTemplate(trips, offers, destinations) {
+  if(trips.length === 0) {
+    return;
+  }
   const total = getTotalPrice(trips, offers);
   const destinationsTrack = createDestinationsTrackTemplate(trips, destinations);
   const {startDate, endDate} = getDatesTrack(trips);

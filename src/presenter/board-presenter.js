@@ -85,6 +85,9 @@ export default class BoardPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventFormPresenter.init(this.offers, this.destinations, this.destinationsList);
+    if(this.#noTripComponent) {
+      remove(this.#noTripComponent);
+    }
   }
 
   #renderNewEventButton() {
@@ -143,12 +146,24 @@ export default class BoardPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}){
-    this.#newEventFormPresenter.destroy();
-    this.#tripPresenters.forEach((presenter) => presenter.destroy());
-    this.#tripPresenters.clear();
+    // if (this.trips.length === 0) {
 
-    remove(this.#sortingComponent);
+    // }
+    if(this.#newEventFormPresenter) {
+      this.#newEventFormPresenter.destroy();
+    }
+    if(this.#tripPresenters) {
+      this.#tripPresenters.forEach((presenter) => presenter.destroy());
+      this.#tripPresenters.clear();
+    }
+    // this.#tripPresenters.forEach((presenter) => presenter.destroy());
+    // this.#tripPresenters.clear();
+    if (this.#sortingComponent) {
+      remove(this.#sortingComponent);
+    }
+    // remove(this.#sortingComponent);
     remove(this.#loadingComponent);
+    // remove(this.#noTripComponent);
 
     if (this.#noTripComponent) {
       remove(this.#noTripComponent);
@@ -161,6 +176,9 @@ export default class BoardPresenter {
 
   #handleEventDestroy = () => {
     this.#newEventButtonComponent.element.disabled = false;
+    if(this.trips.length === 0) {
+      this.#renderNoTrips();
+    }
   };
 
   #handleSortTypeChange = (sortType) => {

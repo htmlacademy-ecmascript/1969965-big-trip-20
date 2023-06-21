@@ -1,6 +1,6 @@
 import FiltersPresenter from './presenter/filters-presenter.js';
 import BoardPresenter from './presenter/board-presenter.js';
-import TripInfoPresenter from './presenter/trip-info-presenter.js';
+// import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripsModel from './modell/trips-model.js';
 import FilterModel from './modell/filter-model.js';
 import TripsApiService from './trips-api-service.js';
@@ -26,12 +26,12 @@ const boardPresenter = new BoardPresenter({
   filterModel,
   infoHeaderElement: infoHeaderElement
 });
-const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel: tripsModel});
+// const tripInfoPresenter = new TripInfoPresenter({infoContainer: infoHeaderElement, tripsModel: tripsModel});
 
-tripsModel.init()
-  .finally(() => {
-    tripInfoPresenter.init();
-  });
+tripsModel.init();
+// .finally(() => {
+//   tripInfoPresenter.init();
+// });
 
 filtersPresenter.init();
 boardPresenter.init();

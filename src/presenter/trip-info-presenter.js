@@ -36,6 +36,10 @@ export default class TripInfoPresenter {
       offers: this.offers
     });
 
+    if(this.trips.length === 0) {
+      return;
+    }
+
     if (prevInfoComponent === null) {
       this.#renderTripInfo();
       return;
@@ -46,9 +50,9 @@ export default class TripInfoPresenter {
   }
 
   #renderTripInfo() {
-    if (this.trips.length < 1) {
-      return;
-    }
+    // if (this.trips.length < 1) {
+    //   return;
+    // }
 
     render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
