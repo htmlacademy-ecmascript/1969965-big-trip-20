@@ -329,14 +329,12 @@ export default class EventFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       price: evt.target.value,
-      // isPriceExists: evt.target.value !== ''
     });
   };
 
   static parseTripToState(trip) {
     return {...trip,
       isNameExists: trip.destination !== '',
-      // isPriceExists: trip.price !== '',
       isDateExists: trip.timeStart !== '' && trip.timeEnd !== '',
       isDisabled: false,
       isSaving: false,
@@ -347,7 +345,6 @@ export default class EventFormView extends AbstractStatefulView {
   static parseStateToTrip(state) {
     const trip = {...state};
     delete trip.isNameExists;
-    // delete trip.isPriceExists;
     delete trip.isDateExists;
     delete trip.isDisabled;
     delete trip.isSaving;

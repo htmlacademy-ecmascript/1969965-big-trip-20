@@ -50,10 +50,6 @@ export default class TripInfoPresenter {
   }
 
   #renderTripInfo() {
-    // if (this.trips.length < 1) {
-    //   return;
-    // }
-
     render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 

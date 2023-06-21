@@ -146,24 +146,20 @@ export default class BoardPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}){
-    // if (this.trips.length === 0) {
-
-    // }
     if(this.#newEventFormPresenter) {
       this.#newEventFormPresenter.destroy();
     }
+
     if(this.#tripPresenters) {
       this.#tripPresenters.forEach((presenter) => presenter.destroy());
       this.#tripPresenters.clear();
     }
-    // this.#tripPresenters.forEach((presenter) => presenter.destroy());
-    // this.#tripPresenters.clear();
+
     if (this.#sortingComponent) {
       remove(this.#sortingComponent);
     }
-    // remove(this.#sortingComponent);
+
     remove(this.#loadingComponent);
-    // remove(this.#noTripComponent);
 
     if (this.#noTripComponent) {
       remove(this.#noTripComponent);
