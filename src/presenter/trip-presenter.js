@@ -131,6 +131,7 @@ export default class TripPresenter {
   #replaceFormToTrip() {
     replace(this.#tripComponent, this.#eventFormComponent);
     this.#mode = Mode.DEFAULT;
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   #handleEditClick = () => {

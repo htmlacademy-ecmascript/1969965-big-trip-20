@@ -79,7 +79,7 @@ export default class TripsModel extends Observable {
 
       this._notify(updateType, newTrip);
     } catch(err) {
-      throw new Error('Can\'t add task');
+      throw new Error('Can\'t add trip');
     }
   }
 
@@ -100,7 +100,7 @@ export default class TripsModel extends Observable {
 
       this._notify(updateType);
     } catch(err) {
-      throw new Error('Can\'t delete task');
+      throw new Error('Can\'t delete trip');
     }
   }
 

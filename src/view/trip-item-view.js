@@ -2,13 +2,14 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, findDifference, formatDifference } from '../utils/common.js';
 import { DateFormat, FavoriteButtonStateClass } from '../constants.js';
 import { getCurrentDestination, getOffers } from '../utils/trip.js';
+import he from 'he';
 
 function createTripOffersTemplate(offers) {
   return `<ul class="event__selected-offers">
           ${offers.map(({title, price}) => `<li class="event__offer">
-              <span class="event__offer-title">${title}</span>
+              <span class="event__offer-title">${he.encode(title)}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">${price}</span>
+              <span class="event__offer-price">${he.encode(String(price))}</span>
              </li>`).join('')}
           </ul>`;
 }
@@ -28,19 +29,19 @@ function createTripItemTemplate(trip, off, destinations) {
   <div class="event">
     <time class="event__date" datetime="${formatDate(timeStart, DateFormat.YEAR_MONTH_DAY)}">${formatDate(timeStart, DateFormat.DAY_MONTH)}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${he.encode(type)}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${name}</h3>
+    <h3 class="event__title">${he.encode(type)} ${he.encode(name)}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormat.YEAR_MONTH_DAY_TIME)}">${formatDate(timeStart, DateFormat.HOUR_MINUTES)}</time>
+        <time class="event__start-time" datetime="${formatDate(timeStart, DateFormat.DAY_MONTH_YEAR_TIME_SLASHED)}">${formatDate(timeStart, DateFormat.HOUR_MINUTES)}</time>
         &mdash;
         <time class="event__end-time" datetime="${formatDate(timeStart, DateFormat.HOUR_MINUTES)}">${formatDate(timeEnd, DateFormat.HOUR_MINUTES)}</time>
       </p>
       <p class="event__duration">${formatDifference(findDifference(timeEnd, timeStart))}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${price}</span>
+      &euro;&nbsp;<span class="event__price-value">${he.encode(String(price))}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
       ${offersTemplate}
